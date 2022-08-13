@@ -5,7 +5,7 @@ import styles from "../styles/Home.module.css";
 import SketchGrid from "../components/SketchGrid";
 
 export default function PixelSketch() {
-  const [gridSize, setGridSize] = React.useState({ width: 30, height: 30 });
+  const [gridSize, setGridSize] = React.useState({ width: 10, height: 10 });
 
   const updateGrid = (event) => {
     const { name, value } = event.target;
