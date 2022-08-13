@@ -1,0 +1,3 @@
+.sketchGrid GridRow:not(:first-child) {
+    border-style: none solid solid solid;
+}
