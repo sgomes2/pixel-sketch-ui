@@ -1,3 +1,7 @@
-.sketchGrid GridRow:not(:first-child) {
+.rows div:first-of-type{
+    border-style: solid;
+}
+
+.rows div:not(:first-of-type){
     border-style: none solid solid solid;
 }

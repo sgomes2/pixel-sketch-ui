@@ -1,20 +1,28 @@
+import { stepLabelClasses } from "@mui/material";
 import React from "react";
 import GridRow from "../GridRow/GridRow";
 import styles from "./SketchGrid.module.css";
 
 const SketchGrid = (props) => {
-  const { width, height } = props;
+  const ref = React.useRef(null);
 
-  const rows = [];
+  const [width, setWidth] = React.useState(0);
 
-  for (let i = 0; i < height; i++) {
-    rows.push(<GridRow size={width} />);
+  React.useEffect(() => {
+    setWidth(ref.current.offsetWidth);
+  }, []);
+
+  const { columns, rows } = props;
+
+  const gridRows = [];
+
+  for (let i = 0; i < rows; i++) {
+    gridRows.push(<GridRow width={width} columns={columns} />);
   }
 
   return (
-    <div>
-      <h1> Sketch Grid</h1>
-      <div className={styles.SketchGrid}>{rows}</div>
+    <div ref={ref} className={styles.rows}>
+      {gridRows}
     </div>
   );
 };

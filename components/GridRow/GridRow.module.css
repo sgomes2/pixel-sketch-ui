@@ -1,11 +1,12 @@
-.gridRow div:not(:first-child) {
-    border-style: solid solid solid none;
+.gridRow {
+    float: left;
 }
 
-.gridRow div:first-child {
-    border-style: solid;
+.gridRow div:first-of-type{
+    border-style: none;
 }
 
-.gridRow div:last-child {
-    float: none;
+.gridRow div:not(:first-of-type){
+    border-style: none solid solid solid;
 }
+

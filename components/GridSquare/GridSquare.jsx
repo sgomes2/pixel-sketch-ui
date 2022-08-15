@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./GridSquare.module.css";
 
 const GridSquare = (props) => {
+  const { squareSize, border } = props;
   const [colored, setColored] = React.useState(false);
 
   const backgroundColor = colored ? "#000" : "#FFF";
@@ -9,7 +10,12 @@ const GridSquare = (props) => {
   return (
     <div
       className={styles.square}
-      style={{ backgroundColor: backgroundColor }}
+      style={{
+        width: squareSize,
+        height: squareSize,
+        backgroundColor: backgroundColor,
+        borderStyle: border,
+      }}
       onClick={() => {
         setColored(!colored);
       }}
