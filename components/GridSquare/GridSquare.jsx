@@ -14,7 +14,7 @@ const GridSquare = (props) => {
         width: squareSize,
         height: squareSize,
         backgroundColor: backgroundColor,
-        borderStyle: border,
+        borderStyle: "solid solid solid solid",
       }}
       onClick={() => {
         setColored(!colored);

@@ -1,12 +1,5 @@
 .gridRow {
-    float: left;
-}
-
-.gridRow div:first-of-type{
-    border-style: none;
-}
-
-.gridRow div:not(:first-of-type){
-    border-style: none solid solid solid;
+    width: 50%;
+    display: block;
 }
 
