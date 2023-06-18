@@ -6,8 +6,8 @@ const Pixel = (props) => {
   return (
     <div
       style={{
-        width: "25px",
-        height: "25px",
+        width: "40px",
+        height: "40px",
         marginRight: "5px",
         marginBottom: "2px",
         border: "2px solid",

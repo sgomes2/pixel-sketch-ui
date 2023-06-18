@@ -12,6 +12,7 @@ function App() {
         transform: "translate(-50%, -50%)",
       }}
     >
+      <h1>Pixel Sketch</h1>
       <PixelGrid gridSize={16} />
     </div>
   );
