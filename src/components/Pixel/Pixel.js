@@ -6,8 +6,10 @@ const Pixel = (props) => {
   return (
     <div
       style={{
-        width: "10px",
-        height: "10px",
+        width: "25px",
+        height: "25px",
+        marginRight: "5px",
+        marginBottom: "2px",
         border: "2px solid",
         backgroundColor: fillState ? "#000" : null,
         display: "inline-block",
