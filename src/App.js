@@ -1,11 +1,10 @@
-import logo from "./logo.svg";
 import "./App.css";
 import PixelGrid from "./components/PixelGrid/PixelGrid";
 
 function App() {
   return (
     <div className="App">
-      <PixelGrid />
+      <PixelGrid gridSize={10} />
     </div>
   );
 }

@@ -10,6 +10,7 @@ const Pixel = (props) => {
         height: "10px",
         border: "2px solid",
         backgroundColor: fillState ? "#000" : null,
+        display: "inline-block",
       }}
       onClick={() => {
         setFillState(!fillState);
