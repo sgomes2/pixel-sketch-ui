@@ -1,0 +1,5 @@
+.cell {
+    min-width: 25px;
+    min-height: 25px;
+    float: left;
+}

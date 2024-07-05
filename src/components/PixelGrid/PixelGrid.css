@@ -1,0 +1,12 @@
+.pixel {
+    min-width: 35px;
+    min-height: 35px;
+    float: left;
+    border-style: solid;
+    border-color: black;
+}
+
+.pixelGrid {
+    background-color: grey;
+    padding: 10px;
+}
