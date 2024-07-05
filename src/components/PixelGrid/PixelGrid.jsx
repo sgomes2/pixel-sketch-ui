@@ -25,7 +25,7 @@ class PixelGrid extends React.Component {
             <div 
                 key={`pixel-${pixelNum}`}
                 onClick={() => {this.updatePixelVal(pixelNum)}}
-                style={{backgroundColor: pixelColor ? pixelColor : 'white'}}
+                style={{backgroundColor: pixelColor ? `rgb${pixelColor}` : 'white'}}
                 className='pixel'
             />
         )
@@ -48,9 +48,7 @@ class PixelGrid extends React.Component {
     }
 
     render() {
-
         const numRows = 16
-    
         const pixelRows = [];
     
         for (let i = 0; i < numRows; i++) {

@@ -2,11 +2,11 @@
     min-width: 35px;
     min-height: 35px;
     float: left;
-    border-style: solid;
-    border-color: black;
+    margin: 2px;
 }
 
 .pixelGrid {
-    background-color: grey;
+    background-color: #0e1c38;
     padding: 10px;
+    border-radius: 10px;
 }
