@@ -17,7 +17,7 @@ class PixelGrid extends React.Component {
     }
 
     getPixel(pixelNum) {
-        const { [pixelNum]:pixelColor } = this.state
+        const { [pixelNum]:pixelColor, mouseDown } = this.state
 
         console.log(`Pixel Num ${pixelNum}: ${pixelColor}`);
 
@@ -25,6 +25,7 @@ class PixelGrid extends React.Component {
             <div 
                 key={`pixel-${pixelNum}`}
                 onClick={() => {this.updatePixelVal(pixelNum)}}
+                onMouseOver={() => { if (mouseDown) {this.updatePixelVal(pixelNum)}}}
                 style={{backgroundColor: pixelColor ? `rgb${pixelColor}` : 'white'}}
                 className='pixel'
             />
@@ -55,7 +56,10 @@ class PixelGrid extends React.Component {
             pixelRows.push(this.getPixelRow(i));
         }
         return (
-            <div className='pixelGrid'>
+            <div 
+                onMouseDown={() => {this.setState({...this.state, mouseDown: true})}}
+                onMouseUp={() => {this.setState({...this.state, mouseDown: false})}}
+                className='pixelGrid'>
               {pixelRows}  
             </div>
         )
