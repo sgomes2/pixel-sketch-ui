@@ -17,7 +17,7 @@ function ColorPicker(props) {
         <div
             onClick={() => {selectColor(color)}}
             key={color}
-            style={{backgroundColor: `rgb${color}`}}
+            style={{backgroundColor: `${color}`}}
             className={`cell ${color === selectedColor ? 'selected' : null }`}
         />
         )
