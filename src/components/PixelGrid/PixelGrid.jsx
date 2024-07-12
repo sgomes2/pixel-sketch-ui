@@ -15,8 +15,9 @@ class PixelGrid extends React.Component {
     printArray() {
         const pixelArray = [];
         for(let i = 0; i < 256; i++) {
-            pixelArray.push(Colors.indexOf(this.state[i]));
+            pixelArray.push(this.state[i] || 0);
         }
+        console.log(pixelArray.toString());
     }
 
     updatePixelVal(pixelNum) {
@@ -26,16 +27,14 @@ class PixelGrid extends React.Component {
     }
 
     getPixel(pixelNum) {
-        const { [pixelNum]:pixelColor, mouseDown } = this.state
-
-        console.log(`Pixel Num ${pixelNum}: ${pixelColor}`);
+        const { [pixelNum]:colorIndex, mouseDown } = this.state
 
         return (
             <div 
                 key={`pixel-${pixelNum}`}
                 onClick={() => {this.updatePixelVal(pixelNum)}}
                 onMouseOver={() => { if (mouseDown) {this.updatePixelVal(pixelNum)}}}
-                style={{backgroundColor: pixelColor ? `${pixelColor}` : 'white'}}
+                style={{backgroundColor: colorIndex ? `${Colors[colorIndex]}` : Colors[1]}}
                 className='pixel'
             />
         )
@@ -72,7 +71,7 @@ class PixelGrid extends React.Component {
                 className='pixelGrid'>
               {pixelRows}  
             </div>
-            <button onClick={this.printArray}> Get Array </button>
+            <button onClick={this.printArray}> Light It Up! </button>
             </div>
             
         )

@@ -2,10 +2,9 @@ import PixelGrid from './components/PixelGrid/PixelGrid';
 import './App.css';
 import { useState } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
-import { Colors } from './constants/constants';
 
 function App() {
-  const [selectedColor, setSelectedColor] = useState(Colors[0])
+  const [selectedColor, setSelectedColor] = useState(0)
   
   return (
     <div className="App">

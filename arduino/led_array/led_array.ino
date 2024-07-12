@@ -5,6 +5,7 @@
 
 CRGB leds[NUM_LEDS];
 CRGB COLORS[16];
+int ledIndex = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -36,13 +37,28 @@ void setup() {
 void loop() {
   if (Serial.available() > 0) {
     // read the incoming byte:
-    String incomingByte = Serial.readString();
+    Serial.print("Recieved serial Information: ");
+    String incomingString = Serial.readString();
+    Serial.println(incomingString);
 
-    int space = incomingByte.indexOf(" ");
-    int ledIndex = incomingByte.substring(0, space).toInt();
-    int colorIndex = incomingByte.substring(space +1).toInt();
+    bool parsingCompleted = false;
 
-    leds[ledIndex] = COLORS[colorIndex];
+    while(!parsingCompleted) {
+      int delimiterIndex = incomingString.indexOf(",");
+      int colorIndex;
+      
+      if (delimiterIndex < 0) {
+        parsingCompleted = true;
+        colorIndex = incomingString.substring(0).toInt();
+      } else {
+        colorIndex = incomingString.substring(0, delimiterIndex).toInt();
+        incomingString = incomingString.substring(delimiterIndex + 1);
+      }
+      leds[ledIndex] = COLORS[colorIndex];
+
+      ledIndex = ( ledIndex == 255 ) ? 0 : ledIndex + 1;
+    }
+
     FastLED.show();
   }
   
@@ -65,35 +81,3 @@ void loop() {
   // }
 }
 
-void parseCSVString(const char* input, char** array, int arraySize) {
-    // Check if the input starts with '[' and ends with ']'
-    if (input[0] != '[' || input[strlen(input)-1] != ']') {
-        // Invalid format, return or handle error as needed
-        return;
-    }
-
-    // Copy the content inside the square brackets (excluding the brackets)
-    char content[strlen(input)];
-    strncpy(content, input + 1, strlen(input) - 2);
-    content[strlen(input) - 2] = '\0';  // Null-terminate the string
-
-    // Initialize variables for parsing
-    char* token;
-    int index = 0;
-
-    // Parse the content using strtok
-    token = strtok(content, ",");
-    while (token != NULL && index < arraySize) {
-        // Remove leading and trailing spaces (if any)
-        while (isspace((unsigned char)*token)) token++;
-        int len = strlen(token);
-        while (len && isspace((unsigned char)token[len - 1])) --len;
-        token[len] = '\0';  // Null-terminate the trimmed token
-
-        // Allocate memory for the token and copy it into the array
-        array[index] = (char*) malloc(len + 1); // allocate memory for the string
-        strcpy(array[index], token); // copy string
-    }
-
-    
-}

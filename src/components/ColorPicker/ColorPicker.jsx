@@ -12,13 +12,13 @@ function ColorPicker(props) {
         onClick(color);
     }
 
-    const availableColors = Colors.map((color) => {
+    const availableColors = Colors.map((color, index) => {
         return (
         <div
-            onClick={() => {selectColor(color)}}
+            onClick={() => {selectColor(index)}}
             key={color}
             style={{backgroundColor: `${color}`}}
-            className={`cell ${color === selectedColor ? 'selected' : null }`}
+            className={`cell ${color === Colors[selectedColor] ? 'selected' : null }`}
         />
         )
     })
