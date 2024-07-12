@@ -1,5 +1,6 @@
 import React from 'react';
 import './PixelGrid.css'
+import {Colors} from '../../constants/constants'
 
 class PixelGrid extends React.Component {
     constructor(props){
@@ -8,6 +9,15 @@ class PixelGrid extends React.Component {
         this.getPixel = this.getPixel.bind(this);
         this.getPixelRow = this.getPixelRow.bind(this); 
         this.updatePixelVal = this.updatePixelVal.bind(this);
+        this.printArray = this.printArray.bind(this);
+    }
+
+    printArray() {
+        const pixelArray = [];
+        for(let i = 0; i < 256; i++) {
+            pixelArray.push(Colors.indexOf(this.state[i]));
+        }
+        console.log(JSON.stringify(pixelArray));
     }
 
     updatePixelVal(pixelNum) {
@@ -56,12 +66,16 @@ class PixelGrid extends React.Component {
             pixelRows.push(this.getPixelRow(i));
         }
         return (
-            <div 
+            <div>
+                <div 
                 onMouseDown={() => {this.setState({...this.state, mouseDown: true})}}
                 onMouseUp={() => {this.setState({...this.state, mouseDown: false})}}
                 className='pixelGrid'>
               {pixelRows}  
             </div>
+            <button onClick={this.printArray}> Get Array </button>
+            </div>
+            
         )
     }
     

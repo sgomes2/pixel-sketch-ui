@@ -1,5 +1,9 @@
 const { SerialPort } = require('serialport');
-const port = new SerialPort({ path: '/dev/ttyACM0', baudRate: 9600});
+const port = new SerialPort({ path: '/dev/ttyACM0', baudRate: 115200});
+
+const testImage = [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,2,2,2,2,2,5,5,2,2,2,2,2,5,5,5,5,2,2,2,2,2,5,5,2,2,2,2,2,5,5,5,5,2,2,2,2,2,5,5,2,2,2,2,2,5,5,5,5,2,2,2,2,2,5,5,2,2,2,2,2,5,5,5,5,2,2,2,2,2,5,5,2,2,2,2,2,5,5,5,5,2,2,2,2,2,5,5,2,2,2,2,2,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 port.on('open', (err) => {
     if(err) {
@@ -7,14 +11,17 @@ port.on('open', (err) => {
     }
     console.log('port open')
 
-    setTimeout(()=>{port.write('1')}, 3000);
-
-    setTimeout(()=>{port.write('0')}, 5000);
-
-    setTimeout(()=>{port.write('1')}, 7000);
-
-    setTimeout(()=>{port.write('0')}, 9000);
+    setTimeout(drawImage, 5000);
 })
+
+const drawImage = () => {
+    testImage.forEach(async (value, index) => {
+        setTimeout(() => {
+            console.log(`sending: ${index} ${value} in ${1200 * index} ms`);
+            port.write(`${index} ${value}`)
+        }, 1200 * index);
+    })
+}
 
 
 

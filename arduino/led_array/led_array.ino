@@ -4,36 +4,48 @@
 #define DATA_PIN 3
 
 CRGB leds[NUM_LEDS];
-
-String incomingByte = "";
+CRGB COLORS[16];
 
 void setup() {
   // put your setup code here, to run once:
   delay(2000);
-  Serial.begin(9600);
+  Serial.begin(115200);
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(10); //Number 0-255
+  FastLED.setBrightness(1); //Number 0-255
   FastLED.clear();
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  COLORS[0] = CRGB::Black;
+  COLORS[1] = CRGB::White;
+  COLORS[2] = CRGB::Red;
+  COLORS[3] = CRGB::Lime;
+  COLORS[4] = CRGB::Blue;
+  COLORS[5] = CRGB::Yellow;
+  COLORS[6] = CRGB::Cyan;
+  COLORS[7] = CRGB::Magenta;
+  COLORS[8] = CRGB::Silver;
+  COLORS[9] = CRGB::Gray;
+  COLORS[10] = CRGB::Maroon;
+  COLORS[11] = CRGB::Olive;
+  COLORS[12] = CRGB::Green;
+  COLORS[13] = CRGB::Purple;
+  COLORS[14] = CRGB::Teal;
+  COLORS[15] = CRGB::Navy;
 }
 
 void loop() {
-  leds[0] = CRGB::Black;
-  leds[1] = CRGB::White;
-  leds[2] = CRGB::Red;
-  leds[3] = CRGB::Lime;
-  leds[4] = CRGB::Blue;
-  leds[5] = CRGB::Yellow;
-  leds[6] = CRGB::Cyan;
-  leds[7] = CRGB::Magenta;
-  leds[8] = CRGB::Silver;
-  leds[9] = CRGB::Gray;
-  leds[10] = CRGB::Maroon;
-  leds[11] = CRGB::Olive;
-  leds[12] = CRGB::Green;
-  leds[13] = CRGB::Purple;
-  leds[14] = CRGB::Teal;
-  leds[15] = CRGB::Navy;
-  FastLED.show();
+  if (Serial.available() > 0) {
+    // read the incoming byte:
+    String incomingByte = Serial.readString();
+
+    int space = incomingByte.indexOf(" ");
+    int ledIndex = incomingByte.substring(0, space).toInt();
+    int colorIndex = incomingByte.substring(space +1).toInt();
+
+    leds[ledIndex] = COLORS[colorIndex];
+    FastLED.show();
+  }
+  
   // put your main code here, to run repeatedly:
   // if (Serial.available() > 0) {
   //   // read the incoming byte:
