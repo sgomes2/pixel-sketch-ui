@@ -17,7 +17,6 @@ class PixelGrid extends React.Component {
         for(let i = 0; i < 256; i++) {
             pixelArray.push(Colors.indexOf(this.state[i]));
         }
-        console.log(JSON.stringify(pixelArray));
     }
 
     updatePixelVal(pixelNum) {
