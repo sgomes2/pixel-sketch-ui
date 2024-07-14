@@ -36,48 +36,55 @@ void setup() {
 
 void loop() {
   if (Serial.available() > 0) {
-    // read the incoming byte:
-    Serial.print("Recieved serial Information: ");
-    String incomingString = Serial.readString();
-    Serial.println(incomingString);
+  parseLedColor();
+  }
+}
 
-    bool parsingCompleted = false;
+void parseLedColor() {
+  int incomingByte = getNextByte();
+  bool parseSuccesful = true;
 
-    while(!parsingCompleted) {
-      int delimiterIndex = incomingString.indexOf(",");
-      int colorIndex;
-      
-      if (delimiterIndex < 0) {
-        parsingCompleted = true;
-        colorIndex = incomingString.substring(0).toInt();
-      } else {
-        colorIndex = incomingString.substring(0, delimiterIndex).toInt();
-        incomingString = incomingString.substring(delimiterIndex + 1);
-      }
-      leds[ledIndex] = COLORS[colorIndex];
-
-      ledIndex = ( ledIndex == 255 ) ? 0 : ledIndex + 1;
+  if ((char)incomingByte == '[') {
+    int ledIndex = getNextByte() - 48;
+    if (ledIndex < 0 || ledIndex > 255) {
+      // Serial.println("Failed to Parse LED Index");
+      // Serial.print("Recived LED Index: ");
+      // Serial.println(ledIndex);
+      parseSuccesful = false;
     }
 
+    int delimiter = getNextByte();
+    if ((char)delimiter != ':'){
+      // Serial.println("Failed to Parse Delimiter");
+      // Serial.print("Recived Delimiter: ");
+      // Serial.println(delimiter);
+      parseSuccesful = false;
+    }
+
+    int colorIndex = getNextByte() - 48;
+    if (colorIndex < 0 || colorIndex > 15){
+    //  Serial.println("Failed to Parse Color Index");
+    //  Serial.print("Recived Color Index: ");
+    //  Serial.println(colorIndex);
+     parseSuccesful = false;
+    }
+
+    if (!parseSuccesful) {
+      Serial.println("Failed to Parse Led Color");
+      return;
+    }
+
+    leds[ledIndex] = COLORS[colorIndex];
     FastLED.show();
   }
-  
-  // put your main code here, to run repeatedly:
-  // if (Serial.available() > 0) {
-  //   // read the incoming byte:
-  //   incomingByte = Serial.readString();
-
-  //   if (incomingByte == "1") {
-  //     Serial.write("Recieved Light on\n");
-  //     digitalWrite(LED_BUILTIN, HIGH);
-  //   } else {
-  //     Serial.write("Recieved Light off\n");
-  //     digitalWrite(LED_BUILTIN, LOW);
-  //   }
-
-    // // say what you got:
-    // Serial.write("I received: ");
-    
-  // }
 }
+
+int getNextByte() {
+  int nextByte = -1;
+  while (nextByte < 0){
+    nextByte = Serial.read();
+  }
+  return nextByte;
+}
+
 

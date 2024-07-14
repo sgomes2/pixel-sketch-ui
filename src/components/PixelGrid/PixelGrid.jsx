@@ -1,6 +1,6 @@
 import React from 'react';
 import './PixelGrid.css'
-import {Colors} from '../../constants/constants'
+import { Colors } from '../../constants/constants'
 
 class PixelGrid extends React.Component {
     constructor(props){
@@ -9,32 +9,26 @@ class PixelGrid extends React.Component {
         this.getPixel = this.getPixel.bind(this);
         this.getPixelRow = this.getPixelRow.bind(this); 
         this.updatePixelVal = this.updatePixelVal.bind(this);
-        this.printArray = this.printArray.bind(this);
-    }
-
-    printArray() {
-        const pixelArray = [];
-        for(let i = 0; i < 256; i++) {
-            pixelArray.push(this.state[i] || 0);
-        }
-        console.log(pixelArray.toString());
     }
 
     updatePixelVal(pixelNum) {
-        const {selectedColor} = this.props;
-
-        this.setState({...this.state, [pixelNum]: selectedColor})
+        const { selectedColor, updateGridValues, gridValues } = this.props;
+        
+        updateGridValues({...gridValues, [pixelNum]: selectedColor});
     }
 
     getPixel(pixelNum) {
-        const { [pixelNum]:colorIndex, mouseDown } = this.state
+        const { mouseDown } = this.state
+        const { gridValues } = this.props
+
+        const colorIndex = gridValues[pixelNum];
 
         return (
             <div 
                 key={`pixel-${pixelNum}`}
                 onClick={() => {this.updatePixelVal(pixelNum)}}
                 onMouseOver={() => { if (mouseDown) {this.updatePixelVal(pixelNum)}}}
-                style={{backgroundColor: colorIndex ? `${Colors[colorIndex]}` : Colors[1]}}
+                style={{backgroundColor: colorIndex !== undefined ? `${Colors[colorIndex]}` : Colors[0]}}
                 className='pixel'
             />
         )
@@ -45,12 +39,17 @@ class PixelGrid extends React.Component {
     
         const pixels = [];
     
-        for (let i = 0; i < numPixels; i++) {
-            pixels.push(this.getPixel((numPixels * rowNum) + i));
+        for (let i = 1; i <= numPixels; i++) {
+            if (rowNum % 2 === 0) {
+                pixels.push(this.getPixel((numPixels * rowNum) + (numPixels - i)));
+            } else {
+                pixels.push(this.getPixel((numPixels * rowNum) + (i-1)));
+            }
+            
         }
     
         return (
-            <div className='pixelRow'>
+            <div key={`Pixel_Row_${rowNum}`} className='pixelRow'>
                 {pixels}
             </div>
         )
@@ -69,11 +68,10 @@ class PixelGrid extends React.Component {
                 onMouseDown={() => {this.setState({...this.state, mouseDown: true})}}
                 onMouseUp={() => {this.setState({...this.state, mouseDown: false})}}
                 className='pixelGrid'>
-              {pixelRows}  
+                    {pixelRows}  
+                </div>
+                {/* <button onClick={this.printArray}> Light It Up! </button> */}
             </div>
-            <button onClick={this.printArray}> Light It Up! </button>
-            </div>
-            
         )
     }
     
