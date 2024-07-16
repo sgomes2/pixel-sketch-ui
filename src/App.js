@@ -2,9 +2,6 @@ import PixelGrid from './components/PixelGrid/PixelGrid';
 import './App.css';
 import { useState } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
-import { IPC_MESSAGES } from './constants/constants';
-
-const { ipcRenderer } = window.require('electron');
 
 function App() {
   const [selectedColor, setSelectedColor] = useState(0)
@@ -16,7 +13,6 @@ function App() {
         pixelArray.push(pixelGridValues[i] || 0);
     }
     console.log(pixelArray.toString());
-    ipcRenderer.send(IPC_MESSAGES.UPDATE_LEDS, pixelArray.toString());
 }
   
   return (
