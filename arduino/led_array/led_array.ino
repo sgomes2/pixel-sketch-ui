@@ -12,9 +12,8 @@ void setup() {
   delay(2000);
   Serial.begin(115200);
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(255); //Number 0-255
+  FastLED.setBrightness(1); //Number 0-255
   FastLED.clear();
-  pinMode(LED_BUILTIN, OUTPUT);
 
   COLORS[0] = CRGB::Black;
   COLORS[1] = CRGB::White;
