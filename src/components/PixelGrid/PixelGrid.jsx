@@ -28,7 +28,7 @@ class PixelGrid extends React.Component {
                 key={`pixel-${pixelNum}`}
                 onClick={() => {this.updatePixelVal(pixelNum)}}
                 onMouseOver={() => { if (mouseDown) {this.updatePixelVal(pixelNum)}}}
-                style={{backgroundColor: colorIndex !== undefined ? `${Colors[colorIndex]}` : Colors[0]}}
+                style={{backgroundColor: colorIndex !== undefined ? `${Colors[colorIndex]}` : 'Black'}}
                 className='pixel'
             />
         )

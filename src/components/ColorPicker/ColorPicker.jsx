@@ -5,7 +5,7 @@ import './ColorPicker.css'
 function ColorPicker(props) {
     const { onClick } = props;
 
-    const [selectedColor, setSelectedColor] = useState(Colors[0]);
+    const [selectedColor, setSelectedColor] = useState(0);
 
     const selectColor = (color) => {
         setSelectedColor(color);

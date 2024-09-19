@@ -1,7 +1,6 @@
 .cell {
     min-width: 35px;
     min-height: 35px;
-    float: left;
     margin: 5px;
     border-radius: 2px;
 }
