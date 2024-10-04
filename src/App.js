@@ -2,6 +2,11 @@ import PixelGrid from './components/PixelGrid/PixelGrid';
 import './App.css';
 import { useState } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import DownloadIcon from '@mui/icons-material/Download';
+import UploadIcon from '@mui/icons-material/Upload';
+
 const io =  require("socket.io-client");
 
 const socket = io('http://192.168.1.160:9080');
@@ -36,8 +41,17 @@ function App() {
           </div>
           <div style={{margin: '10px'}}>
             <ColorPicker onClick={setSelectedColor}/>
-          </div>   
+          </div>
         </div>
+
+        <Stack direction="row" spacing={2}>
+      <Button variant="contained" startIcon={<DownloadIcon />}>
+        Download Sketch
+      </Button>
+      <Button variant="contained" endIcon={<UploadIcon />}>
+        Open Sketch
+      </Button>
+    </Stack>
         
         <button onClick={updateLedArray}>Light It Up!</button>
         
