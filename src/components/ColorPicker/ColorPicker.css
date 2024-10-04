@@ -1,0 +1,18 @@
+.cell {
+    min-width: 35px;
+    min-height: 35px;
+    margin: 5px;
+    border-radius: 2px;
+}
+
+.colorPicker {
+    padding: 5px;
+    background-color: #1A2130;
+    border-radius: 10px;
+}
+
+.selected {
+    margin: 0px;
+    border-style: solid;
+    border-color: rgb(255,215,0);
+}
