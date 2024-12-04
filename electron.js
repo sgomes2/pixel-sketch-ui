@@ -1,45 +1,15 @@
-// electron.js
-const { app, BrowserWindow, ipcMain } = require('electron');
-const { IPC_MESSAGES } = require('./src/constants/constants.jsx');
-const path = require('path');
-
-let mainWindow;
+const { app, BrowserWindow } = require('electron');
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 1000,
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
     webPreferences: {
-      nodeIntegration: true,
-      preload: path
-    },
-  });
+      nodeIntegration: true
+    }
+  })
 
-  const startURL = 'http://localhost:3000';
-
-  mainWindow.loadURL(startURL);
-
-  mainWindow.on('closed', () => (mainWindow = null));
+  win.loadURL('http://localhost:3000')
 }
 
-function handleUpdateLedGrid (event, gridValues) {
-  console.log(`Recieved Grid Values: ${gridValues}`);
-}
-
-app.on('ready', createWindow);
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
-
-app.whenReady().then(() => {
-  ipcMain.on(IPC_MESSAGES.UPDATE_LEDS, handleUpdateLedGrid)
-})
+app.whenReady().then(createWindow)
