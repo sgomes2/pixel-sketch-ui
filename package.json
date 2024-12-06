@@ -10,6 +10,8 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
@@ -17,7 +19,7 @@
     "socketio": "^1.0.0",
     "web-vitals": "^2.1.4"
   },
-  "main": "electron.js",
+  "main": "index.js",
   "build": {
     "appId": "com.example.myapp",
     "productName": "Pixel Sketch",
