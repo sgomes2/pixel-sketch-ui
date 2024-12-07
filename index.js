@@ -5,6 +5,7 @@ function handlePixelSketchArray(event, data) {
   var client = new net.Socket();
   client.connect(80, 'pixelsketch.local', function () {
     console.log('Arduino Connected');
+    console.log(`Sending: ${data}`);
     client.write(data);
     client.destroy();
   });

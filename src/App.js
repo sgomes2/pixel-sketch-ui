@@ -18,14 +18,17 @@ const { ipcRenderer } = window.require("electron");
 // });
 
 function App() {
-  const [selectedColor, setSelectedColor] = useState(0)
+  const [selectedColor, setSelectedColor] = useState(1)
   const [pixelGridValues, setPixelGridValues] = useState({});
   const updateLedArray = () => {
     let pixelArray = "";
     for (let i = 0; i < 256; i++) {
-      pixelArray += `[${i}:${pixelGridValues[i] || 0}]`
+      // console.log(`pixel num: ${i}:${pixelGridValues[i]}`)
+      if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null) {
+        pixelArray += `[${i}:${pixelGridValues[i]}]`
+      }
+
     }
-    console.log(pixelArray);
 
     // Create WebSocket connection.
     ipcRenderer.send('set-sketch', pixelArray);

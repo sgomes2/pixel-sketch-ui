@@ -13,6 +13,8 @@ class PixelGrid extends React.Component {
 
     updatePixelVal(pixelNum) {
         const { selectedColor, updateGridValues, gridValues } = this.props;
+
+        // console.log(`Setting Pixel ${pixelNum}:${selectedColor}`);
         
         updateGridValues({...gridValues, [pixelNum]: selectedColor});
     }
