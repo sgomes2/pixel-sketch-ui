@@ -2,13 +2,17 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 var net = require('net');
 
 function handlePixelSketchArray(event, data) {
-  var client = new net.Socket();
-  client.connect(80, 'pixelsketch.local', function () {
-    // console.log('Arduino Connected');
-    // console.log(`Sending: ${data}`);
-    client.write(data);
-    client.destroy();
-  });
+  try {
+    var client = new net.Socket();
+    console.log("Writing new sketch to LED array");
+    client.connect(80, 'pixelsketch.local', function () {
+      client.write(data);
+      client.destroy();
+    });
+  } catch (exception) {
+    console.log(`Failed to send arduino sketch: ${exception}`);
+  }
+
 }
 
 const createWindow = () => {
@@ -19,9 +23,11 @@ const createWindow = () => {
     },
     width: 900,
     height: 900
-  })
+  });
 
-  win.loadURL('http://localhost:3000')
+  win.setMenuBarVisibility(false)
+
+  win.loadFile('build/index.html')
 }
 
 app.whenReady().then(() => {

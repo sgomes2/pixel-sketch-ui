@@ -4,23 +4,16 @@ import { useState } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import DownloadIcon from '@mui/icons-material/Download';
-import UploadIcon from '@mui/icons-material/Upload';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import Colors from './constants/constants';
 const { ipcRenderer } = window.require("electron");
 
 const previousSubmission = {};
 
-// const io =  require("socket.io-client");
-
-// const socket = io('http://192.168.1.160:9080');
-
-// // Handle connection
-// socket.on('connect', () => {
-//     console.log('Connected to server');
-// });
-
 function App() {
-  const [selectedColor, setSelectedColor] = useState(1)
+  const [selectedColor, setSelectedColor] = useState(0)
   const [pixelGridValues, setPixelGridValues] = useState({});
 
 
@@ -28,19 +21,31 @@ function App() {
     let pixelArray = "";
     for (let i = 0; i < 256; i++) {
       // console.log(`pixel num: ${i}:${pixelGridValues[i]}`)
-
       // console.log(`previous value: ${previousSubmission[i]}, new value: ${pixelGridValues[i]}`);
 
       if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null && previousSubmission[i] !== pixelGridValues[i]) {
         pixelArray += `[${i}:${pixelGridValues[i]}]`
         previousSubmission[i] = pixelGridValues[i];
       }
-
     }
 
     // console.log(`Pixel Array: ${pixelArray.toString()}`);
-    // Create WebSocket connection.
     ipcRenderer.send('set-sketch', pixelArray);
+  }
+
+  const clearSketch = () => {
+    setPixelGridValues({});
+  }
+
+  const generateRandomSketch = () => {
+    const randomSketch = {};
+
+
+    for (let i = 0; i < 256; i++) {
+      randomSketch[i] = Math.floor(Math.random() * 8);
+    }
+
+    setPixelGridValues(randomSketch);
   }
 
   return (
@@ -58,15 +63,16 @@ function App() {
         </div>
 
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" startIcon={<DownloadIcon />}>
-            Download Sketch
+          <Button variant="contained" onClick={generateRandomSketch} startIcon={<ShuffleIcon />}>
+            Random Sketch
           </Button>
-          <Button variant="contained" endIcon={<UploadIcon />}>
-            Open Sketch
+          <Button variant="contained" onClick={clearSketch} startIcon={<ClearAllIcon />}>
+            Clear Sketch
+          </Button>
+          <Button variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
+            Light Up Box
           </Button>
         </Stack>
-
-        <button onClick={updateLedArray}>Light It Up!</button>
 
       </header>
     </div>
