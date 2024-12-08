@@ -16,6 +16,7 @@ function handlePixelSketchArray(event, data) {
 }
 
 const createWindow = () => {
+  if (require('electron-squirrel-startup')) app.quit();
   const win = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,

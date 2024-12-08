@@ -9,7 +9,15 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        name: 'pixel-sketch',
+        "setupIcon": "./assets/pixel-sketch.ico", // Optional, to set a custom installer icon
+        "iconUrl": "./assets/pixel-sketch.ico", // URL to the icon for the app
+        "loadingGif": './src/assets/splash.gif',
+        "shortcutName": "Pixel Sketch", // Set the shortcut name
+        "createDesktopShortcut": true, // Create a desktop shortcut
+        "createStartMenuShortcut": true // Optionally create a start menu shortcut
+      },
     },
     {
       name: '@electron-forge/maker-zip',
