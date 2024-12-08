@@ -8,6 +8,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import UploadIcon from '@mui/icons-material/Upload';
 const { ipcRenderer } = window.require("electron");
 
+const previousSubmission = {};
+
 // const io =  require("socket.io-client");
 
 // const socket = io('http://192.168.1.160:9080');
@@ -20,16 +22,23 @@ const { ipcRenderer } = window.require("electron");
 function App() {
   const [selectedColor, setSelectedColor] = useState(1)
   const [pixelGridValues, setPixelGridValues] = useState({});
+
+
   const updateLedArray = () => {
     let pixelArray = "";
     for (let i = 0; i < 256; i++) {
       // console.log(`pixel num: ${i}:${pixelGridValues[i]}`)
-      if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null) {
+
+      // console.log(`previous value: ${previousSubmission[i]}, new value: ${pixelGridValues[i]}`);
+
+      if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null && previousSubmission[i] !== pixelGridValues[i]) {
         pixelArray += `[${i}:${pixelGridValues[i]}]`
+        previousSubmission[i] = pixelGridValues[i];
       }
 
     }
 
+    // console.log(`Pixel Array: ${pixelArray.toString()}`);
     // Create WebSocket connection.
     ipcRenderer.send('set-sketch', pixelArray);
   }
