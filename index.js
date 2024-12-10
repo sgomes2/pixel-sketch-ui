@@ -22,6 +22,7 @@ const createWindow = () => {
       nodeIntegration: true,
       contextIsolation: false
     },
+    icon: "./assets/round-pencil.ico",
     width: 900,
     height: 900
   });

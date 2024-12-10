@@ -4,19 +4,20 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: "./assets/round-pencil.ico",
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: 'pixel-sketch',
-        "setupIcon": "./assets/pixel-sketch.ico", // Optional, to set a custom installer icon
-        "iconUrl": "./assets/pixel-sketch.ico", // URL to the icon for the app
-        "loadingGif": './src/assets/splash.gif',
-        "shortcutName": "Pixel Sketch", // Set the shortcut name
-        "createDesktopShortcut": true, // Create a desktop shortcut
-        "createStartMenuShortcut": true // Optionally create a start menu shortcut
+        name: 'PixelSketch',
+        setupIcon: "./assets/round-pencil.ico", // Optional, to set a custom installer icon
+        icon: "./assets/round-pencil.ico", // URL to the icon for the app
+        loadingGif: './assets/pencil-loading.gif',
+        shortcutName: "Pixel Sketch", // Set the shortcut name
+        createDesktopShortcut: true, // Create a desktop shortcut
+        createStartMenuShortcut: true // Optionally create a start menu shortcut
       },
     },
     {
