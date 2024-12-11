@@ -1,6 +1,9 @@
 {
   "name": "pixel-sketch",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "author": "Saulo Gomes",
+  "description": "A 16x16 pixel array for simple drawings.",
+  "homepage": "./",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -10,6 +13,9 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "electron-squirrel-startup": "^1.0.1",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
@@ -17,22 +23,22 @@
     "socketio": "^1.0.0",
     "web-vitals": "^2.1.4"
   },
-  "electron": "electron .",
-  "dist": "electron-builder",
-  "main": "electron.js",
+  "main": "index.js",
   "build": {
-    "appId": "com.example.myapp",
+    "appId": "com.pixel-sketch.myapp",
     "productName": "Pixel Sketch",
     "directories": {
       "output": "dist"
     }
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "electron-forge start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "electron ."
+    "electron": "electron .",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "eslintConfig": {
     "extends": [
@@ -53,7 +59,16 @@
     ]
   },
   "devDependencies": {
-    "electron": "^31.1.0",
-    "electron-is-dev": "^3.0.1"
+    "@electron-forge/cli": "^7.6.0",
+    "@electron-forge/maker-deb": "^7.6.0",
+    "@electron-forge/maker-rpm": "^7.6.0",
+    "@electron-forge/maker-squirrel": "^7.6.0",
+    "@electron-forge/maker-zip": "^7.6.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
+    "@electron-forge/plugin-fuses": "^7.6.0",
+    "@electron/fuses": "^1.8.0",
+    "electron": "^33.2.1",
+    "electron-is-dev": "^3.0.1",
+    "electron-packager": "^17.1.2"
   }
 }
