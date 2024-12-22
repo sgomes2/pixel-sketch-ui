@@ -3,10 +3,10 @@
 This project is a simple 16x16 pixel art application. There is an accompanying [Arduino sketch](https://github.com/sgomes2/pixel-sketch-embedded) which can be used to display the drawn image on a 16x16 LED matrix.
 
 # Table of Contents
-1. [Running Locally](#running-locally)
-2. [Building Installer](#building-installer)
-2.1 [Windows](#windows)
-2.2 [Mac](#mac)
+- [Running Locally](#running-locally)
+- [Building Installer](#building-installer)
+    - [Windows](#windows)
+    - [Mac](#mac)
 
 ## Running Locally
 The Electron application currently points to static HTML that's output when the react project is built. Use the following steps to build and use the UI without installing it.
