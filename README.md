@@ -4,9 +4,9 @@ This project is a simple 16x16 pixel art application. There is an accompanying [
 
 # Table of Contents
 1. [Running Locally](#running-locally)
-2. [Example2](#example2)
-3. [Third Example](#third-example)
-4. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
+2. [Building Installer](#building-installer)
+2.1 [Windows](#windows)
+2.2 [Mac](#mac)
 
 ## Running Locally
 The Electron application currently points to static HTML that's output when the react project is built. Use the following steps to build and use the UI without installing it.
