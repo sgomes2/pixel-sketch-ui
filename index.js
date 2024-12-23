@@ -1,5 +1,6 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 var net = require('net');
+const path = require('node:path');
 
 function handlePixelSketchArray(event, data) {
   try {
@@ -20,19 +21,35 @@ const createWindow = () => {
   const win = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      preload: path.join(__dirname + '/src/', 'preload.js')
     },
     icon: "./assets/round-pencil.ico",
     width: 900,
     height: 900
   });
 
-  win.setMenuBarVisibility(false)
+  const menu = Menu.buildFromTemplate([
+    {
+      label: 'Mode',
+      submenu: [
+        {
+          click: () => win.webContents.send('set-mode', 1),
+          label: 'Stand Alone'
+        },
+        {
+          click: () => win.webContents.send('set-mode', -1),
+          label: 'LED Array'
+        }
+      ]
+    }
+  ])
+  Menu.setApplicationMenu(menu)
 
   win.loadFile('build/index.html')
 }
 
 app.whenReady().then(() => {
-  ipcMain.on('set-sketch', handlePixelSketchArray)
+  ipcMain.handle('set-sketch', handlePixelSketchArray)
   createWindow()
 })

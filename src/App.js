@@ -8,14 +8,22 @@ import ShuffleIcon from '@mui/icons-material/Shuffle';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Colors from './constants/constants';
+import { preload } from 'react-dom';
 const { ipcRenderer } = window.require("electron");
+
+const STANDALONE = 1;
+const LED_ARRAY = -1;
 
 const previousSubmission = {};
 
 function App() {
   const [selectedColor, setSelectedColor] = useState(0)
   const [pixelGridValues, setPixelGridValues] = useState({});
+  const [uiMode, setUiMode] = useState(STANDALONE);
 
+  window.electronAPI.onSetMode((modeVal) => {
+    setUiMode(modeVal);
+  })
 
   const updateLedArray = () => {
     let pixelArray = "";
@@ -30,7 +38,7 @@ function App() {
     }
 
     // console.log(`Pixel Array: ${pixelArray.toString()}`);
-    ipcRenderer.send('set-sketch', pixelArray);
+    window.electronAPI.send('set-sketch', pixelArray);
   }
 
   const clearSketch = () => {
@@ -69,9 +77,11 @@ function App() {
           <Button variant="contained" onClick={clearSketch} startIcon={<ClearAllIcon />}>
             Clear Sketch
           </Button>
-          <Button variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
-            Light Up Box
-          </Button>
+          {uiMode === LED_ARRAY ?
+            <Button variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
+              Light Up Box
+            </Button> :
+            null}
         </Stack>
 
       </header>
