@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { UI_MODES } from './constants/constants';
+import { ALL_COLORS, LED_COLORS, UI_MODES } from './constants/constants';
 
 const previousSubmission = {};
 
@@ -42,9 +42,10 @@ function App() {
   const generateRandomSketch = () => {
     const randomSketch = {};
 
+    const colors = uiMode === UI_MODES.LED_ARRAY ? LED_COLORS : ALL_COLORS;
 
     for (let i = 0; i < 256; i++) {
-      randomSketch[i] = Math.floor(Math.random() * 8);
+      randomSketch[i] = Math.floor(Math.random() * colors.length);
     }
 
     setPixelGridValues(randomSketch);

@@ -3,6 +3,8 @@ var net = require('net');
 const path = require('node:path');
 const { UI_MODES } = require("./src/constants/constants.jsx")
 
+let variableSize = false;
+
 function handlePixelSketchArray(data) {
   console.log('Recieved new LED sketch')
   try {
@@ -15,7 +17,6 @@ function handlePixelSketchArray(data) {
   } catch (exception) {
     console.log(`Failed to send arduino sketch: ${exception}`);
   }
-
 }
 
 const createWindow = () => {
@@ -38,17 +39,36 @@ const createWindow = () => {
       label: 'Mode',
       submenu: [
         {
-          click: () => win.webContents.send('set-mode', UI_MODES.STANDALONE),
+          click: () => setUiMode(UI_MODES.STANDALONE),
           label: 'Stand Alone'
         },
         {
-          click: () => win.webContents.send('set-mode', UI_MODES.LED_ARRAY),
+          click: () => setUiMode(UI_MODES.LED_ARRAY),
           label: 'LED Array'
         }
       ]
-    }
+    },
+    // {
+    //   label: "Size",
+    //   id: "size",
+    //   submenu: [
+    //     { label: "16x16" },
+    //     { label: "32x32" },
+    //     { label: "64x64" },
+    //     { label: "128x128" },
+    //     { label: "256x256" },
+    //     { label: "512x512" }
+    //   ]
+    // }
   ])
   Menu.setApplicationMenu(menu)
+
+  const setUiMode = (uiMode) => {
+
+    win.webContents.send('set-mode', uiMode);
+
+    // setVariableSize(uiMode === UI_MODES.STANDALONE);
+  }
 
   win.loadFile('build/index.html')
 }
@@ -56,4 +76,8 @@ const createWindow = () => {
 app.whenReady().then(() => {
   ipcMain.handle('set-sketch', handlePixelSketchArray)
   createWindow()
-})
+});
+
+// const setVariableSize = (enable) => {
+//   Menu.getApplicationMenu().getMenuItemById("size").enabled = enable;
+// }
