@@ -1,6 +1,6 @@
 import React from 'react';
 import './PixelGrid.css'
-import { Colors } from '../../constants/constants'
+import { LED_COLORS, ALL_COLORS, UI_MODES } from '../../constants/constants'
 
 class PixelGrid extends React.Component {
     constructor(props){
@@ -21,7 +21,9 @@ class PixelGrid extends React.Component {
 
     getPixel(pixelNum) {
         const { mouseDown } = this.state
-        const { gridValues } = this.props
+        const { gridValues, uiMode } = this.props
+
+        const colorMode = uiMode === UI_MODES.STANDALONE ? ALL_COLORS : LED_COLORS;
 
         const colorIndex = gridValues[pixelNum];
 
@@ -30,7 +32,7 @@ class PixelGrid extends React.Component {
                 key={`pixel-${pixelNum}`}
                 onClick={() => {this.updatePixelVal(pixelNum)}}
                 onMouseOver={() => { if (mouseDown) {this.updatePixelVal(pixelNum)}}}
-                style={{backgroundColor: colorIndex !== undefined ? `${Colors[colorIndex]}` : 'Black'}}
+                style={{backgroundColor: colorIndex !== undefined ? `${colorMode[colorIndex]}` : 'Black'}}
                 className='pixel'
             />
         )

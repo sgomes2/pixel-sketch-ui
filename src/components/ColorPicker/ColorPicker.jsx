@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Colors } from "../../constants/constants";
+import { LED_COLORS, ALL_COLORS, UI_MODES} from "../../constants/constants";
 import './ColorPicker.css'
 
 function ColorPicker(props) {
-    const { onClick } = props;
+    const { onClick, uiMode } = props;
 
     const [selectedColor, setSelectedColor] = useState(0);
 
@@ -12,13 +12,15 @@ function ColorPicker(props) {
         onClick(color);
     }
 
-    const availableColors = Colors.map((color, index) => {
+    const colorMode = uiMode === UI_MODES.STANDALONE ? ALL_COLORS : LED_COLORS;
+
+    const availableColors = colorMode.map((color, index) => {
         return (
         <div
             onClick={() => {selectColor(index)}}
             key={color}
             style={{backgroundColor: `${color}`}}
-            className={`cell ${color === Colors[selectedColor] ? 'selected' : null }`}
+            className={`cell ${color === colorMode[selectedColor] ? 'selected' : null }`}
         />
         )
     })

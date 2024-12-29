@@ -1,35 +1,30 @@
 import PixelGrid from './components/PixelGrid/PixelGrid';
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import Colors from './constants/constants';
-import { preload } from 'react-dom';
-const { ipcRenderer } = window.require("electron");
-
-const STANDALONE = 1;
-const LED_ARRAY = -1;
+import { UI_MODES } from './constants/constants';
 
 const previousSubmission = {};
 
 function App() {
   const [selectedColor, setSelectedColor] = useState(0)
   const [pixelGridValues, setPixelGridValues] = useState({});
-  const [uiMode, setUiMode] = useState(STANDALONE);
+  const [uiMode, setUiMode] = useState(UI_MODES.STANDALONE);
 
-  window.electronAPI.onSetMode((modeVal) => {
-    setUiMode(modeVal);
-  })
+  useEffect(() => {
+    window.electronAPI.onSetMode((modeVal) => {
+      setUiMode(modeVal);
+    })
+  }, []);
 
   const updateLedArray = () => {
     let pixelArray = "";
     for (let i = 0; i < 256; i++) {
-      // console.log(`pixel num: ${i}:${pixelGridValues[i]}`)
-      // console.log(`previous value: ${previousSubmission[i]}, new value: ${pixelGridValues[i]}`);
 
       if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null && previousSubmission[i] !== pixelGridValues[i]) {
         pixelArray += `[${i}:${pixelGridValues[i]}]`
@@ -37,8 +32,7 @@ function App() {
       }
     }
 
-    // console.log(`Pixel Array: ${pixelArray.toString()}`);
-    window.electronAPI.send('set-sketch', pixelArray);
+    window.electronAPI.updateLedArray(pixelArray);
   }
 
   const clearSketch = () => {
@@ -63,10 +57,10 @@ function App() {
 
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: '10px' }}>
-            <PixelGrid gridValues={pixelGridValues} updateGridValues={setPixelGridValues} selectedColor={selectedColor} />
+            <PixelGrid gridValues={pixelGridValues} updateGridValues={setPixelGridValues} selectedColor={selectedColor} uiMode={uiMode} />
           </div>
           <div style={{ margin: '10px' }}>
-            <ColorPicker onClick={setSelectedColor} />
+            <ColorPicker onClick={setSelectedColor} uiMode={uiMode} />
           </div>
         </div>
 
@@ -77,7 +71,7 @@ function App() {
           <Button variant="contained" onClick={clearSketch} startIcon={<ClearAllIcon />}>
             Clear Sketch
           </Button>
-          {uiMode === LED_ARRAY ?
+          {uiMode === UI_MODES.LED_ARRAY ?
             <Button variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
               Light Up Box
             </Button> :
