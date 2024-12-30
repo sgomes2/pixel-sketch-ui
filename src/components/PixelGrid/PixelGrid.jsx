@@ -9,6 +9,7 @@ class PixelGrid extends React.Component {
         this.getPixel = this.getPixel.bind(this);
         this.getPixelRow = this.getPixelRow.bind(this); 
         this.updatePixelVal = this.updatePixelVal.bind(this);
+        this.ref = React.createRef();
     }
 
     updatePixelVal(pixelNum) {
@@ -19,7 +20,7 @@ class PixelGrid extends React.Component {
         updateGridValues({...gridValues, [pixelNum]: selectedColor});
     }
 
-    getPixel(pixelNum) {
+    getPixel(pixelNum, pixelSize) {
         const { mouseDown } = this.state
         const { gridValues, uiMode } = this.props
 
@@ -32,24 +33,27 @@ class PixelGrid extends React.Component {
                 key={`pixel-${pixelNum}`}
                 onClick={() => {this.updatePixelVal(pixelNum)}}
                 onMouseOver={() => { if (mouseDown) {this.updatePixelVal(pixelNum)}}}
-                style={{backgroundColor: colorIndex !== undefined ? `${colorMode[colorIndex]}` : 'Black'}}
+                style={{
+                    backgroundColor: colorIndex !== undefined ? `${colorMode[colorIndex]}` : 'Black',
+                    minHeight: `${pixelSize}px`, maxHeight: `${pixelSize}px`,
+                    minWidth: `${pixelSize}px`, maxWidth: `${pixelSize}px`,
+                }}
                 className='pixel'
             />
         )
     }
 
-    getPixelRow(rowNum) {
+    getPixelRow(rowNum, pixelSize) {
         const numPixels = 16;
     
         const pixels = [];
     
         for (let i = 1; i <= numPixels; i++) {
             if (rowNum % 2 === 0) {
-                pixels.push(this.getPixel((numPixels * rowNum) + (numPixels - i)));
+                pixels.push(this.getPixel((numPixels * rowNum) + (numPixels - i), pixelSize));
             } else {
-                pixels.push(this.getPixel((numPixels * rowNum) + (i-1)));
+                pixels.push(this.getPixel((numPixels * rowNum) + (i-1), pixelSize));
             }
-            
         }
     
         return (
@@ -60,11 +64,16 @@ class PixelGrid extends React.Component {
     }
 
     render() {
+        const {screenSize} = this.props
+        const {width, height} = screenSize;
+
         const numRows = 16
         const pixelRows = [];
+
+        const pixelSize = Math.floor(Math.min(height, width) * .6 / numRows);
     
         for (let i = 0; i < numRows; i++) {
-            pixelRows.push(this.getPixelRow(i));
+            pixelRows.push(this.getPixelRow(i, pixelSize));
         }
         return (
             <div>
@@ -77,8 +86,7 @@ class PixelGrid extends React.Component {
                 {/* <button onClick={this.printArray}> Light It Up! </button> */}
             </div>
         )
-    }
-    
+    }   
 }
 
 export default PixelGrid;

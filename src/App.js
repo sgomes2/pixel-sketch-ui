@@ -1,6 +1,6 @@
 import PixelGrid from './components/PixelGrid/PixelGrid';
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -15,11 +15,21 @@ function App() {
   const [selectedColor, setSelectedColor] = useState(0)
   const [pixelGridValues, setPixelGridValues] = useState({});
   const [uiMode, setUiMode] = useState(UI_MODES.STANDALONE);
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.electronAPI.onSetMode((modeVal) => {
       setUiMode(modeVal);
-    })
+    });
+
+    const updateSize = () => {
+      setSize({ width: window.innerWidth, height: window.innerHeight });
+    }
+
+    window.addEventListener('resize', updateSize);
+    updateSize();
+
+    return () => window.removeEventListener('resize', updateSize);
   }, []);
 
   const updateLedArray = () => {
@@ -58,10 +68,19 @@ function App() {
 
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: '10px' }}>
-            <PixelGrid gridValues={pixelGridValues} updateGridValues={setPixelGridValues} selectedColor={selectedColor} uiMode={uiMode} />
+            <PixelGrid gridValues={pixelGridValues}
+              updateGridValues={setPixelGridValues}
+              selectedColor={selectedColor}
+              uiMode={uiMode}
+              screenSize={size}
+            />
           </div>
           <div style={{ margin: '10px' }}>
-            <ColorPicker onClick={setSelectedColor} uiMode={uiMode} />
+            <ColorPicker
+              onClick={setSelectedColor}
+              uiMode={uiMode}
+              screenSize={size}
+            />
           </div>
         </div>
 
