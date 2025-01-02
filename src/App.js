@@ -12,11 +12,11 @@ import { ALL_COLORS, LED_COLORS, UI_MODES } from './constants/constants';
 const previousSubmission = {};
 
 function App() {
-  const [selectedColor, setSelectedColor] = useState(0)
+  const [selectedColor, setSelectedColor] = useState("White");
   const [pixelGridValues, setPixelGridValues] = useState({});
   const [uiMode, setUiMode] = useState(UI_MODES.STANDALONE);
   const [size, setSize] = useState({ width: 0, height: 0 });
-  const [gridSize, setGridSize] = useState(16);
+  const [gridSize, setGridSize] = useState(32);
 
   useLayoutEffect(() => {
     window.electronAPI.onSetMode((modeVal) => {
@@ -65,8 +65,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h2 style={{ marginTop: '10px' }}>Pixel Sketch</h2>
-
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: '10px' }}>
             <PixelGrid gridValues={pixelGridValues}

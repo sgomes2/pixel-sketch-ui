@@ -6,9 +6,7 @@ function ColorPicker(props) {
     const { onClick, uiMode, screenSize } = props;
     const { width, height } = screenSize;
 
-    const sketchGridWidth = Math.floor((Math.min(height, width)) * .8);
-
-    console.log(`Grid Height: ${height}, Grid Width: ${width}`);
+    const sketchGridWidth = Math.floor((Math.min(height, width)) * .75);
 
     const [selectedColor, setSelectedColor] = useState("White");
 
@@ -19,12 +17,13 @@ function ColorPicker(props) {
 
     const colorMode = uiMode === UI_MODES.STANDALONE ? ALL_COLORS : LED_COLORS;
 
-    const pixelSize = Math.floor((sketchGridWidth * .8) / 12);
+    const pixelSize = Math.floor(((sketchGridWidth - 20)) / 14);
 
     const availableColors = colorMode.map((colorPallet) => {
         return (
             <div>
                 {colorPallet.map((color, index) => {
+                    const currentlySelected = color === selectedColor
                     return (
                         <div
                             onClick={() => { selectColor(color) }}
@@ -33,9 +32,8 @@ function ColorPicker(props) {
                                 backgroundColor: `${color}`,
                                 minHeight: `${pixelSize}px`, maxHeight: `${pixelSize}px`,
                                 minWidth: `${pixelSize}px`, maxWidth: `${pixelSize}px`,
-                                float: `${index === 0 ? 'inline-start' : 'inline-start'}`,
                             }}
-                            className={`cell ${color === selectedColor ? 'selected' : null}`}
+                            className={`cell ${currentlySelected ? 'selected' : ''}`}
                         />
                     )
                 })}
@@ -44,14 +42,9 @@ function ColorPicker(props) {
     })
 
     return (
-        <div className="colorPicker" style={{
-            minWidth: `${sketchGridWidth + 20}px`,
-            maxWidth: `${sketchGridWidth + 20}px`,
-            minHeight: `${pixelSize * colorMode.length}px`,
-        }}>
+        <div className="colorPicker">
             {availableColors}
         </div>
-
     )
 }
 
