@@ -4,8 +4,6 @@ import { useState, useLayoutEffect } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import ShuffleIcon from '@mui/icons-material/Shuffle';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { ALL_COLORS, LED_COLORS, UI_MODES } from './constants/constants';
 
@@ -32,8 +30,6 @@ function App() {
       const pallet = Math.floor(Math.random() * colors.length);
       const randomColor = colors[pallet][Math.floor(Math.random() * colors[pallet].length)];
 
-
-      console.log(`Setting pixel ${i} to ${randomColor}`);
       randomSketch[i] = randomColor;
     }
 
@@ -103,7 +99,6 @@ function App() {
         </div>
         {uiMode === UI_MODES.LED_ARRAY ?
           <Stack direction="row" spacing={2}>
-
             <Button variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
               Light Up Box
             </Button>
