@@ -1,25 +1,43 @@
 import { useState } from "react";
-import { Colors } from "../../constants/constants";
+import { LED_COLORS, ALL_COLORS, UI_MODES } from "../../constants/constants";
 import './ColorPicker.css'
 
 function ColorPicker(props) {
-    const { onClick } = props;
+    const { onClick, uiMode, screenSize } = props;
+    const { width, height } = screenSize;
 
-    const [selectedColor, setSelectedColor] = useState(0);
+    const sketchGridWidth = Math.floor((Math.min(height, width)) * .75);
+
+    const [selectedColor, setSelectedColor] = useState("White");
 
     const selectColor = (color) => {
         setSelectedColor(color);
         onClick(color);
     }
 
-    const availableColors = Colors.map((color, index) => {
+    const colorMode = uiMode === UI_MODES.STANDALONE ? ALL_COLORS : LED_COLORS;
+
+    const pixelSize = Math.floor(((sketchGridWidth - 20)) / 14);
+
+    const availableColors = colorMode.map((colorPallet) => {
         return (
-        <div
-            onClick={() => {selectColor(index)}}
-            key={color}
-            style={{backgroundColor: `${color}`}}
-            className={`cell ${color === Colors[selectedColor] ? 'selected' : null }`}
-        />
+            <div>
+                {colorPallet.map((color, index) => {
+                    const currentlySelected = color === selectedColor
+                    return (
+                        <div
+                            onClick={() => { selectColor(color) }}
+                            key={color}
+                            style={{
+                                backgroundColor: `${color}`,
+                                minHeight: `${pixelSize}px`, maxHeight: `${pixelSize}px`,
+                                minWidth: `${pixelSize}px`, maxWidth: `${pixelSize}px`,
+                            }}
+                            className={`cell ${currentlySelected ? 'selected' : ''}`}
+                        />
+                    )
+                })}
+            </div>
         )
     })
 

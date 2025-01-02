@@ -1,7 +1,12 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 var net = require('net');
+const path = require('node:path');
+const { UI_MODES } = require("./src/constants/constants.jsx")
 
-function handlePixelSketchArray(event, data) {
+let variableSize = false;
+
+function handlePixelSketchArray(data) {
+  console.log('Recieved new LED sketch')
   try {
     var client = new net.Socket();
     console.log("Writing new sketch to LED array");
@@ -12,7 +17,6 @@ function handlePixelSketchArray(event, data) {
   } catch (exception) {
     console.log(`Failed to send arduino sketch: ${exception}`);
   }
-
 }
 
 const createWindow = () => {
@@ -20,19 +24,101 @@ const createWindow = () => {
   const win = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: true,
+      preload: path.join(__dirname + '/src/', 'preload.js')
     },
     icon: "./assets/round-pencil.ico",
     width: 900,
     height: 900
   });
 
-  win.setMenuBarVisibility(false)
+  win.webContents.openDevTools()
+
+  const setUiMode = (uiMode) => {
+
+    win.webContents.send('set-mode', uiMode);
+  }
+
+  const clearSketch = () => {
+
+    win.webContents.send('clear-sketch');
+  }
+
+  const generateRandomSketch = () => {
+
+    win.webContents.send('random-sketch');
+  }
+
+  const menu = Menu.buildFromTemplate([
+    {
+      label: 'Mode',
+      submenu: [
+        {
+          label: 'Stand Alone',
+          submenu: [
+            {
+              label: '16x16',
+              click: () => setUiMode({
+                mode: UI_MODES.STANDALONE,
+                size: 16
+              }),
+            },
+            {
+              label: '32x32',
+              click: () => setUiMode({
+                mode: UI_MODES.STANDALONE,
+                size: 32
+              }),
+            },
+            {
+              label: '64x64',
+              click: () => setUiMode({
+                mode: UI_MODES.STANDALONE,
+                size: 64
+              }),
+            },
+            {
+              label: '128x128',
+              click: () => setUiMode({
+                mode: UI_MODES.STANDALONE,
+                size: 128
+              }),
+            }
+          ]
+        },
+        {
+          click: () => setUiMode({
+            mode: UI_MODES.LED_ARRAY,
+            size: 16
+          }),
+          label: 'LED Array'
+        }
+      ]
+    },
+    {
+      label: 'Sketch',
+      submenu: [
+        {
+          label: "Clear Sketch",
+          click: clearSketch
+        },
+        {
+          label: 'Random Sketch',
+          click: generateRandomSketch
+        }
+      ]
+    }
+  ])
+  Menu.setApplicationMenu(menu)
 
   win.loadFile('build/index.html')
 }
 
 app.whenReady().then(() => {
-  ipcMain.on('set-sketch', handlePixelSketchArray)
+  ipcMain.handle('set-sketch', handlePixelSketchArray)
   createWindow()
-})
+});
+
+// const setVariableSize = (enable) => {
+//   Menu.getApplicationMenu().getMenuItemById("size").enabled = enable;
+// }

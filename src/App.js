@@ -1,37 +1,20 @@
 import PixelGrid from './components/PixelGrid/PixelGrid';
 import './App.css';
-import { useState } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import ShuffleIcon from '@mui/icons-material/Shuffle';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import Colors from './constants/constants';
-const { ipcRenderer } = window.require("electron");
+import { ALL_COLORS, LED_COLORS, UI_MODES } from './constants/constants';
 
 const previousSubmission = {};
 
 function App() {
-  const [selectedColor, setSelectedColor] = useState(0)
+  const [selectedColor, setSelectedColor] = useState("White");
   const [pixelGridValues, setPixelGridValues] = useState({});
-
-
-  const updateLedArray = () => {
-    let pixelArray = "";
-    for (let i = 0; i < 256; i++) {
-      // console.log(`pixel num: ${i}:${pixelGridValues[i]}`)
-      // console.log(`previous value: ${previousSubmission[i]}, new value: ${pixelGridValues[i]}`);
-
-      if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null && previousSubmission[i] !== pixelGridValues[i]) {
-        pixelArray += `[${i}:${pixelGridValues[i]}]`
-        previousSubmission[i] = pixelGridValues[i];
-      }
-    }
-
-    // console.log(`Pixel Array: ${pixelArray.toString()}`);
-    ipcRenderer.send('set-sketch', pixelArray);
-  }
+  const [uiMode, setUiMode] = useState(UI_MODES.STANDALONE);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+  const [gridSize, setGridSize] = useState(16);
 
   const clearSketch = () => {
     setPixelGridValues({});
@@ -39,41 +22,89 @@ function App() {
 
   const generateRandomSketch = () => {
     const randomSketch = {};
+    console.log('Generating Random Sketch')
 
+    const colors = uiMode === UI_MODES.LED_ARRAY ? LED_COLORS : ALL_COLORS;
 
-    for (let i = 0; i < 256; i++) {
-      randomSketch[i] = Math.floor(Math.random() * 8);
+    for (let i = 0; i < gridSize * gridSize; i++) {
+      const pallet = Math.floor(Math.random() * colors.length);
+      const randomColor = colors[pallet][Math.floor(Math.random() * colors[pallet].length)];
+
+      randomSketch[i] = randomColor;
     }
 
     setPixelGridValues(randomSketch);
   }
 
+  useLayoutEffect(() => {
+    window.electronAPI.onSetMode((modeVal) => {
+      const { mode, size } = modeVal;
+      setUiMode(mode);
+      setGridSize(size);
+    });
+
+    window.electronAPI.onClearSketch(() => {
+      clearSketch();
+    });
+
+    window.electronAPI.onRandomSketch(() => {
+      clearSketch();
+      generateRandomSketch();
+    });
+
+    const updateSize = () => {
+      setSize({ width: window.innerWidth, height: window.innerHeight });
+    }
+
+    window.addEventListener('resize', updateSize);
+    updateSize();
+
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
+  const updateLedArray = () => {
+    let pixelArray = "";
+    for (let i = 0; i < 256; i++) {
+
+      if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null && previousSubmission[i] !== pixelGridValues[i]) {
+        pixelArray += `[${i}:${pixelGridValues[i]}]`
+        previousSubmission[i] = pixelGridValues[i];
+      }
+    }
+
+    window.electronAPI.updateLedArray(pixelArray);
+  }
+
   return (
     <div className="App">
       <header className="App-header">
-        <h2 style={{ marginTop: '10px' }}>Pixel Sketch</h2>
-
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: '10px' }}>
-            <PixelGrid gridValues={pixelGridValues} updateGridValues={setPixelGridValues} selectedColor={selectedColor} />
-          </div>
-          <div style={{ margin: '10px' }}>
-            <ColorPicker onClick={setSelectedColor} />
+            <PixelGrid gridValues={pixelGridValues}
+              updateGridValues={setPixelGridValues}
+              selectedColor={selectedColor}
+              uiMode={uiMode}
+              screenSize={size}
+              gridSize={gridSize}
+            />
           </div>
         </div>
 
-        <Stack direction="row" spacing={2}>
-          <Button variant="contained" onClick={generateRandomSketch} startIcon={<ShuffleIcon />}>
-            Random Sketch
-          </Button>
-          <Button variant="contained" onClick={clearSketch} startIcon={<ClearAllIcon />}>
-            Clear Sketch
-          </Button>
-          <Button variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
-            Light Up Box
-          </Button>
-        </Stack>
-
+        <div style={{ margin: '10px' }}>
+          <ColorPicker
+            onClick={setSelectedColor}
+            uiMode={uiMode}
+            screenSize={size}
+          />
+        </div>
+        {uiMode === UI_MODES.LED_ARRAY ?
+          <Stack direction="row" spacing={2}>
+            <Button variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
+              Light Up Box
+            </Button>
+          </Stack>
+          :
+          null}
       </header>
     </div>
   );
