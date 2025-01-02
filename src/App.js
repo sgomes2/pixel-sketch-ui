@@ -101,20 +101,15 @@ function App() {
             screenSize={size}
           />
         </div>
-        <Stack direction="row" spacing={2}>
-          <Button variant="contained" onClick={generateRandomSketch} startIcon={<ShuffleIcon />}>
-            Random Sketch
-          </Button>
-          <Button variant="contained" onClick={clearSketch} startIcon={<ClearAllIcon />}>
-            Clear Sketch
-          </Button>
-          {uiMode === UI_MODES.LED_ARRAY ?
+        {uiMode === UI_MODES.LED_ARRAY ?
+          <Stack direction="row" spacing={2}>
+
             <Button variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
               Light Up Box
-            </Button> :
-            null}
-        </Stack>
-
+            </Button>
+          </Stack>
+          :
+          null}
       </header>
     </div>
   );
