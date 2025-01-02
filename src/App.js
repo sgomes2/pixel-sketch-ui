@@ -16,11 +16,44 @@ function App() {
   const [pixelGridValues, setPixelGridValues] = useState({});
   const [uiMode, setUiMode] = useState(UI_MODES.STANDALONE);
   const [size, setSize] = useState({ width: 0, height: 0 });
-  const [gridSize, setGridSize] = useState(32);
+  const [gridSize, setGridSize] = useState(16);
+
+  const clearSketch = () => {
+    setPixelGridValues({});
+  }
+
+  const generateRandomSketch = () => {
+    const randomSketch = {};
+    console.log('Generating Random Sketch')
+
+    const colors = uiMode === UI_MODES.LED_ARRAY ? LED_COLORS : ALL_COLORS;
+
+    for (let i = 0; i < gridSize * gridSize; i++) {
+      const pallet = Math.floor(Math.random() * colors.length);
+      const randomColor = colors[pallet][Math.floor(Math.random() * colors[pallet].length)];
+
+
+      console.log(`Setting pixel ${i} to ${randomColor}`);
+      randomSketch[i] = randomColor;
+    }
+
+    setPixelGridValues(randomSketch);
+  }
 
   useLayoutEffect(() => {
     window.electronAPI.onSetMode((modeVal) => {
-      setUiMode(modeVal);
+      const { mode, size } = modeVal;
+      setUiMode(mode);
+      setGridSize(size);
+    });
+
+    window.electronAPI.onClearSketch(() => {
+      clearSketch();
+    });
+
+    window.electronAPI.onRandomSketch(() => {
+      clearSketch();
+      generateRandomSketch();
     });
 
     const updateSize = () => {
@@ -44,22 +77,6 @@ function App() {
     }
 
     window.electronAPI.updateLedArray(pixelArray);
-  }
-
-  const clearSketch = () => {
-    setPixelGridValues({});
-  }
-
-  const generateRandomSketch = () => {
-    const randomSketch = {};
-
-    const colors = uiMode === UI_MODES.LED_ARRAY ? LED_COLORS : ALL_COLORS;
-
-    for (let i = 0; i < 256; i++) {
-      randomSketch[i] = Math.floor(Math.random() * colors.length);
-    }
-
-    setPixelGridValues(randomSketch);
   }
 
   return (

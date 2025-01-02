@@ -34,41 +34,82 @@ const createWindow = () => {
 
   win.webContents.openDevTools()
 
+  const setUiMode = (uiMode) => {
+
+    win.webContents.send('set-mode', uiMode);
+  }
+
+  const clearSketch = () => {
+
+    win.webContents.send('clear-sketch');
+  }
+
+  const generateRandomSketch = () => {
+
+    win.webContents.send('random-sketch');
+  }
+
   const menu = Menu.buildFromTemplate([
     {
       label: 'Mode',
       submenu: [
         {
-          click: () => setUiMode(UI_MODES.STANDALONE),
-          label: 'Stand Alone'
+          label: 'Stand Alone',
+          submenu: [
+            {
+              label: '16x16',
+              click: () => setUiMode({
+                mode: UI_MODES.STANDALONE,
+                size: 16
+              }),
+            },
+            {
+              label: '32x32',
+              click: () => setUiMode({
+                mode: UI_MODES.STANDALONE,
+                size: 32
+              }),
+            },
+            {
+              label: '64x64',
+              click: () => setUiMode({
+                mode: UI_MODES.STANDALONE,
+                size: 64
+              }),
+            },
+            {
+              label: '128x128',
+              click: () => setUiMode({
+                mode: UI_MODES.STANDALONE,
+                size: 128
+              }),
+            }
+          ]
         },
         {
-          click: () => setUiMode(UI_MODES.LED_ARRAY),
+          click: () => setUiMode({
+            mode: UI_MODES.LED_ARRAY,
+            size: 16
+          }),
           label: 'LED Array'
         }
       ]
     },
-    // {
-    //   label: "Size",
-    //   id: "size",
-    //   submenu: [
-    //     { label: "16x16" },
-    //     { label: "32x32" },
-    //     { label: "64x64" },
-    //     { label: "128x128" },
-    //     { label: "256x256" },
-    //     { label: "512x512" }
-    //   ]
-    // }
+    {
+      label: 'Sketch',
+      submenu: [
+        {
+          label: "Clear Sketch",
+          click: clearSketch
+        },
+        {
+          label: 'Random Sketch',
+          click: generateRandomSketch
+        }
+      ]
+    }
   ])
   Menu.setApplicationMenu(menu)
-
-  const setUiMode = (uiMode) => {
-
-    win.webContents.send('set-mode', uiMode);
-
-    // setVariableSize(uiMode === UI_MODES.STANDALONE);
-  }
 
   win.loadFile('build/index.html')
 }
