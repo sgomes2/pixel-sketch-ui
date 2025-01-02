@@ -33,7 +33,7 @@ function ColorPicker(props) {
                                 backgroundColor: `${color}`,
                                 minHeight: `${pixelSize}px`, maxHeight: `${pixelSize}px`,
                                 minWidth: `${pixelSize}px`, maxWidth: `${pixelSize}px`,
-                                float: `${index === 0 ? 'inline-start' : 'left'}`,
+                                float: `${index === 0 ? 'inline-start' : 'inline-start'}`,
                             }}
                             className={`cell ${color === selectedColor ? 'selected' : null}`}
                         />
