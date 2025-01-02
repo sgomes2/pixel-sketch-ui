@@ -8,7 +8,7 @@ function ColorPicker(props) {
 
     const sketchGridWidth = Math.floor((Math.min(height, width)) * .75);
 
-    const [selectedColor, setSelectedColor] = useState("White");
+    const [selectedColor, setSelectedColor] = useState("#FFFFFF");
 
     const selectColor = (color) => {
         setSelectedColor(color);
