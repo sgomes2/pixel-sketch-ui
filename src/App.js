@@ -16,6 +16,7 @@ function App() {
   const [pixelGridValues, setPixelGridValues] = useState({});
   const [uiMode, setUiMode] = useState(UI_MODES.STANDALONE);
   const [size, setSize] = useState({ width: 0, height: 0 });
+  const [gridSize, setGridSize] = useState(16);
 
   useLayoutEffect(() => {
     window.electronAPI.onSetMode((modeVal) => {
@@ -73,17 +74,18 @@ function App() {
               selectedColor={selectedColor}
               uiMode={uiMode}
               screenSize={size}
-            />
-          </div>
-          <div style={{ margin: '10px' }}>
-            <ColorPicker
-              onClick={setSelectedColor}
-              uiMode={uiMode}
-              screenSize={size}
+              gridSize={gridSize}
             />
           </div>
         </div>
 
+        <div style={{ margin: '10px' }}>
+          <ColorPicker
+            onClick={setSelectedColor}
+            uiMode={uiMode}
+            screenSize={size}
+          />
+        </div>
         <Stack direction="row" spacing={2}>
           <Button variant="contained" onClick={generateRandomSketch} startIcon={<ShuffleIcon />}>
             Random Sketch

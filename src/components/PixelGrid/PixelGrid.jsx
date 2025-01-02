@@ -22,11 +22,9 @@ class PixelGrid extends React.Component {
 
     getPixel(pixelNum, pixelSize) {
         const { mouseDown } = this.state
-        const { gridValues, uiMode } = this.props
+        const { gridValues } = this.props
 
-        const colorMode = uiMode === UI_MODES.STANDALONE ? ALL_COLORS : LED_COLORS;
-
-        const colorIndex = gridValues[pixelNum];
+        const color = gridValues[pixelNum];
 
         return (
             <div 
@@ -34,7 +32,7 @@ class PixelGrid extends React.Component {
                 onClick={() => {this.updatePixelVal(pixelNum)}}
                 onMouseOver={() => { if (mouseDown) {this.updatePixelVal(pixelNum)}}}
                 style={{
-                    backgroundColor: colorIndex !== undefined ? `${colorMode[colorIndex]}` : 'Black',
+                    backgroundColor: color !== undefined ? `${color}` : 'Black',
                     minHeight: `${pixelSize}px`, maxHeight: `${pixelSize}px`,
                     minWidth: `${pixelSize}px`, maxWidth: `${pixelSize}px`,
                 }}
@@ -64,15 +62,14 @@ class PixelGrid extends React.Component {
     }
 
     render() {
-        const {screenSize} = this.props
+        const {screenSize, gridSize} = this.props
         const {width, height} = screenSize;
 
-        const numRows = 16
         const pixelRows = [];
 
-        const pixelSize = Math.floor(Math.min(height, width) * .6 / numRows);
+        const pixelSize = Math.floor(Math.min(height, width) * .8 / gridSize);
     
-        for (let i = 0; i < numRows; i++) {
+        for (let i = 0; i < gridSize; i++) {
             pixelRows.push(this.getPixelRow(i, pixelSize));
         }
         return (

@@ -1,8 +1,7 @@
 .cell {
-    min-width: 35px;
-    min-height: 35px;
     margin: 5px;
     border-radius: 2px;
+    float: left;
 }
 
 .colorPicker {
