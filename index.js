@@ -19,7 +19,7 @@ function handlePixelSketchArray(data) {
   }
 }
 
-const saveSketch = (sketch) => {
+const getFilePath = () => {
   let selectedSaveLocation = dialog.showSaveDialogSync({ defaultPath: 'new_sketch', filters: { name: 'Json', extensions: ['json'] } });
 
   if (selectedSaveLocation === undefined) {
@@ -27,10 +27,9 @@ const saveSketch = (sketch) => {
   }
 
   const pathDelimiter = isWin ? "\\" : "/";
-
   const saveLocation = selectedSaveLocation.split(pathDelimiter);
 
-  let fileName = saveLocation[-1];
+  let fileName = saveLocation.pop();
 
   if (fileName.includes(".")) {
     fileName = fileName.substring(0, fileName.lastIndexOf("."));
@@ -38,9 +37,13 @@ const saveSketch = (sketch) => {
 
   fileName += '.json';
 
-  saveLocation[-1] = fileName;
+  saveLocation.push(fileName);
 
-  const finalSaveLocation = saveLocation.join(pathDelimiter);
+  return (saveLocation.join(pathDelimiter));
+}
+
+const saveSketch = (sketch) => {
+
 
   console.log(`Saving to ${finalSaveLocation}`);
 }
