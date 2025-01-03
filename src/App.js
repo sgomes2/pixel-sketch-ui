@@ -60,6 +60,10 @@ function App() {
       generateRandomSketch();
     });
 
+    window.electronAPI.onRequestSketch(() => {
+      handleSketchRequest();
+    })
+
     const updateSize = () => {
       setSize({ width: window.innerWidth, height: window.innerHeight });
     }

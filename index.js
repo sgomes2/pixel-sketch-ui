@@ -21,6 +21,8 @@ function handlePixelSketchArray(data) {
 
 const saveSketch = (sketch) => {
   const saveLocation = dialog.showSaveDialogSync();
+
+  console.log(`Saving ${JSON.stringify(sketch)} to ${saveLocation}`);
   // win.webContents.send('save-sketch');
 }
 
