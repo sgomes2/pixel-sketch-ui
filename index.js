@@ -6,7 +6,7 @@ const { UI_MODES } = require("./src/constants/constants.jsx")
 // let variableSize = false;
 
 function handlePixelSketchArray(data) {
-  console.log('Recieved new LED sketch')
+  console.log(`Recieved new LED sketch: ${data}`);
   try {
     var client = new net.Socket();
     console.log("Writing new sketch to LED array");
@@ -135,8 +135,8 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('set-sketch', handlePixelSketchArray);
-  ipcMain.handle('save-sketch', saveSketch)
+  ipcMain.handle('set-sketch', (event, array) => handlePixelSketchArray(array));
+  ipcMain.handle('save-sketch', (event, sketch) => saveSketch(sketch));
   createWindow();
 });
 

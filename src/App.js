@@ -21,10 +21,10 @@ function App() {
   }
 
   const handleSketchRequest = () => {
-    window.electronAPI.saveSketch({
+    window.electronAPI.saveSketch(JSON.stringify({
       size: gridSize,
       sketch: { ...pixelGridValues }
-    });
+    }));
   }
 
   const generateRandomSketch = () => {
