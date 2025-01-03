@@ -1,7 +1,8 @@
 const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron')
 var net = require('net');
 const path = require('node:path');
-const { UI_MODES } = require("./src/constants/constants.jsx")
+const fs = require('fs');
+const { UI_MODES } = require("./src/constants/constants.jsx");
 
 var isWin = process.platform === "win32";
 
@@ -44,8 +45,15 @@ const getFilePath = () => {
 
 const saveSketch = (sketch) => {
 
+  const saveLocation = getFilePath();
+  console.log(`Saving to ${saveLocation}`);
 
-  console.log(`Saving to ${finalSaveLocation}`);
+  try {
+    fs.writeFileSync(saveLocation, sketch);
+    console.log('File written successfully!');
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 const createWindow = () => {
@@ -157,8 +165,8 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  ipcMain.on('set-sketch', (_event, array) => { handlePixelSketchArray(array) });
-  ipcMain.on('save-sketch', (_event, sketch) => { saveSketch(sketch) });
+  ipcMain.handle('set-sketch', (_event, array) => { handlePixelSketchArray(array) });
+  ipcMain.handle('save-sketch', (_event, sketch) => { saveSketch(sketch) });
   createWindow();
 });
 
