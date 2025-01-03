@@ -20,6 +20,13 @@ function App() {
     setPixelGridValues({});
   }
 
+  const handleSketchRequest = () => {
+    window.electronAPI.saveSketch({
+      size: gridSize,
+      sketch: { ...pixelGridValues }
+    });
+  }
+
   const generateRandomSketch = () => {
     const randomSketch = {};
     console.log('Generating Random Sketch')
@@ -39,6 +46,7 @@ function App() {
   useLayoutEffect(() => {
     window.electronAPI.onSetMode((modeVal) => {
       const { mode, size } = modeVal;
+      clearSketch();
       setUiMode(mode);
       setGridSize(size);
     });
@@ -64,7 +72,7 @@ function App() {
 
   const updateLedArray = () => {
     let pixelArray = "";
-    for (let i = 0; i < 256; i++) {
+    for (let i = 0; i < gridSize; i++) {
 
       if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null && previousSubmission[i] !== pixelGridValues[i]) {
         pixelArray += `[${i}:${pixelGridValues[i]}]`

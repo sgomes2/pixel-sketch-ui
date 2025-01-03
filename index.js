@@ -1,9 +1,9 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron')
 var net = require('net');
 const path = require('node:path');
 const { UI_MODES } = require("./src/constants/constants.jsx")
 
-let variableSize = false;
+// let variableSize = false;
 
 function handlePixelSketchArray(data) {
   console.log('Recieved new LED sketch')
@@ -17,6 +17,11 @@ function handlePixelSketchArray(data) {
   } catch (exception) {
     console.log(`Failed to send arduino sketch: ${exception}`);
   }
+}
+
+const saveSketch = (sketch) => {
+  const saveLocation = dialog.showSaveDialogSync();
+  // win.webContents.send('save-sketch');
 }
 
 const createWindow = () => {
@@ -49,7 +54,20 @@ const createWindow = () => {
     win.webContents.send('random-sketch');
   }
 
+  const requestCurrentSketch = () => {
+    win.webContents.send('request-sketch');
+  }
+
   const menu = Menu.buildFromTemplate([
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Save Sketch',
+          click: requestCurrentSketch,
+        }
+      ]
+    },
     {
       label: 'Mode',
       submenu: [
@@ -115,8 +133,9 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('set-sketch', handlePixelSketchArray)
-  createWindow()
+  ipcMain.handle('set-sketch', handlePixelSketchArray);
+  ipcMain.handle('save-sketch', saveSketch)
+  createWindow();
 });
 
 // const setVariableSize = (enable) => {
