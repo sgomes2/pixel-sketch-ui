@@ -42,5 +42,14 @@ module.exports = {
     }),
     LED_COLORS: [PRIMARY_COLORS],
     ALL_COLORS: [PRIMARY_COLORS, SECONDARY_COLORS, TERTIARY_COLORS],
-    DEFAULT_COLOR: "#000000"
+    DEFAULT_COLOR: "#000000",
+    IPC_MESSAGES: {
+        SET_MODE: 'set-mode',
+        OPEN_SKETCH: 'open-sketch',
+        CLEAR_SKETCH: 'clear-sketch',
+        RANDOM_SKETCH: 'random-sketch',
+        REQUEST_SKETCH: 'request-sketch',
+        SET_SKETCH: 'set-sketch',
+        SAVE_SKETCH: 'save-sketch'
+    }
 };

@@ -36,7 +36,8 @@ function App() {
 
   const generateRandomSketch = () => {
     const randomSketch = {};
-    console.log('Generating Random Sketch')
+    const numPixels = gridSize * gridSize;
+    console.log(`Generating Random Sketch with ${numPixels} pixels`);
 
     const colors = uiMode === UI_MODES.LED_ARRAY ? LED_COLORS : ALL_COLORS;
 
@@ -78,8 +79,11 @@ function App() {
     window.addEventListener('resize', updateSize);
     updateSize();
 
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
+    return () => {
+      window.removeEventListener('resize', updateSize)
+      window.electronAPI.removeAllListeners();
+    };
+  }, [gridSize, pixelGridValues]);
 
   const updateLedArray = () => {
     let pixelArray = "";

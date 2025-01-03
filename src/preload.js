@@ -1,11 +1,19 @@
+const { IPC_MESSAGES } = require('./constants/constants.jsx')
 const { contextBridge, ipcRenderer } = require('electron/renderer')
 
 contextBridge.exposeInMainWorld('electronAPI', {
-    onSetMode: (callback) => ipcRenderer.on('set-mode', (_event, mode) => { callback(mode) }),
-    onOpenSketch: (callback) => ipcRenderer.on('open-sketch', (_event, sketch) => { callback(sketch) }),
-    onClearSketch: (callback) => ipcRenderer.on('clear-sketch', () => { callback() }),
-    onRandomSketch: (callback) => ipcRenderer.on('random-sketch', () => { callback() }),
-    onRequestSketch: (callback) => ipcRenderer.on('request-sketch', () => { callback() }),
-    updateLedArray: (array) => ipcRenderer.invoke('set-sketch', array),
-    saveSketch: (sketch) => ipcRenderer.invoke('save-sketch', sketch),
-})
+    onSetMode: (callback) => ipcRenderer.on(IPC_MESSAGES.SET_MODE, (_event, mode) => { callback(mode) }),
+    onOpenSketch: (callback) => ipcRenderer.on(IPC_MESSAGES.OPEN_SKETCH, (_event, sketch) => { callback(sketch) }),
+    onClearSketch: (callback) => ipcRenderer.on(IPC_MESSAGES.CLEAR_SKETCH, () => { callback() }),
+    onRandomSketch: (callback) => ipcRenderer.on(IPC_MESSAGES.RANDOM_SKETCH, () => { callback() }),
+    onRequestSketch: (callback) => ipcRenderer.on(IPC_MESSAGES.REQUEST_SKETCH, () => { callback() }),
+    updateLedArray: (array) => ipcRenderer.invoke(IPC_MESSAGES.SET_SKETCH, array),
+    saveSketch: (sketch) => ipcRenderer.invoke(IPC_MESSAGES.SAVE_SKETCH, sketch),
+    removeAllListeners: () => {
+        ipcRenderer.removeAllListeners(IPC_MESSAGES.SET_MODE);
+        ipcRenderer.removeAllListeners(IPC_MESSAGES.OPEN_SKETCH);
+        ipcRenderer.removeAllListeners(IPC_MESSAGES.CLEAR_SKETCH);
+        ipcRenderer.removeAllListeners(IPC_MESSAGES.RANDOM_SKETCH);
+        ipcRenderer.removeAllListeners(IPC_MESSAGES.REQUEST_SKETCH);
+    },
+});
