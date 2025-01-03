@@ -36,9 +36,11 @@ function App() {
         return;
       }
 
-      const action = success ? "Successfully" : "Failed to";
-
-      toast(`${action} saved sketch to ${fileName}`);
+      if (success) {
+        toast.success(`Successfully saved sketch`);
+      } else {
+        toast.error(`Failed to saved sketch to ${fileName}`);
+      }
     });
   }
 
@@ -50,7 +52,7 @@ function App() {
     const { size, mode, sketch, success } = sketchData;
 
     if (!success || !mode || !sketch || !size) {
-      toast(`Failed to open sketch. Make sure this is a valid file`);
+      toast.error(`Failed to open sketch. Make sure this is a valid file`);
       return;
     }
 
@@ -62,11 +64,10 @@ function App() {
   const generateRandomSketch = () => {
     const randomSketch = {};
     const numPixels = gridSize * gridSize;
-    console.log(`Generating Random Sketch with ${numPixels} pixels`);
 
     const colors = uiMode === UI_MODES.LED_ARRAY ? LED_COLORS : ALL_COLORS;
 
-    for (let i = 0; i < gridSize * gridSize; i++) {
+    for (let i = 0; i < numPixels; i++) {
       const pallet = Math.floor(Math.random() * colors.length);
       const randomColor = colors[pallet][Math.floor(Math.random() * colors[pallet].length)];
 
@@ -124,15 +125,24 @@ function App() {
       }
     }
 
-    console.log(`Sending pixelArray: ${pixelArray}`);
-
     window.electronAPI.updateLedArray(pixelArray);
   }
 
   return (
     <div className="App">
       <header className="App-header">
-        <ToastContainer />
+        <ToastContainer
+          position="top-center"
+          autoClose={1000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable={false}
+          pauseOnHover={false}
+          theme="dark"
+        />
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: '10px' }}>
             <PixelGrid gridValues={pixelGridValues}
