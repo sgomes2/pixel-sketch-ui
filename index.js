@@ -6,7 +6,7 @@ const { UI_MODES } = require("./src/constants/constants.jsx");
 
 var isWin = process.platform === "win32";
 
-function handlePixelSketchArray(data) {
+function handlePixelSketchArray(_event, data) {
   try {
     var client = new net.Socket();
     console.log("Writing new sketch to LED array");
@@ -42,13 +42,33 @@ const getFilePath = () => {
   return (saveLocation.join(pathDelimiter));
 }
 
-const saveSketch = (sketch) => {
+const saveSketch = async (_event, sketch) => {
   const saveLocation = getFilePath();
+  let success = false;
 
   try {
     fs.writeFileSync(saveLocation, sketch);
+    success = true;
   } catch (err) {
     console.error(err);
+  }
+
+  return (
+    {
+      fileName: saveLocation,
+      success
+    }
+  )
+}
+
+const getSavedSketch = () => {
+  let selectedSketchLocation = dialog.showOpenDialogSync({ filters: [{ name: 'Sketches', extensions: ['json'] }] })[0];
+  console.log(JSON.stringify(selectedSketchLocation));
+  try {
+    const sketchData = JSON.parse(fs.readFileSync(selectedSketchLocation, 'utf8'));
+    return sketchData;
+  } catch (err) {
+    return null;
   }
 }
 
@@ -72,6 +92,14 @@ const createWindow = () => {
     win.webContents.send('set-mode', uiMode);
   }
 
+  const openSketch = () => {
+    let sketchData = getSavedSketch();
+
+    sketchData = sketchData === null ? { success: false } : sketchData;
+
+    win.webContents.send('open-sketch', sketchData);
+  }
+
   const clearSketch = () => {
 
     win.webContents.send('clear-sketch');
@@ -93,6 +121,10 @@ const createWindow = () => {
         {
           label: 'Save Sketch',
           click: requestCurrentSketch,
+        },
+        {
+          label: 'Open Sketch',
+          click: openSketch,
         }
       ]
     },
@@ -161,8 +193,8 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('set-sketch', (_event, array) => { handlePixelSketchArray(array) });
-  ipcMain.handle('save-sketch', (_event, sketch) => { saveSketch(sketch) });
+  ipcMain.handle('set-sketch', handlePixelSketchArray);
+  ipcMain.handle('save-sketch', saveSketch);
   createWindow();
 });
 

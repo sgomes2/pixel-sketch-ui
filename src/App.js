@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { ALL_COLORS, LED_COLORS, UI_MODES, DEFAULT_GRID_BACKGROUND_COLOR, DEFAULT_SELECTED_COLOR } from './constants/constants';
+import { ToastContainer, toast } from 'react-toastify';
 
 const previousSubmission = {};
 const getEmptyGrid = (gridSize) => {
@@ -26,12 +27,31 @@ function App() {
   const handleSketchRequest = () => {
     window.electronAPI.saveSketch(JSON.stringify({
       size: gridSize,
+      mode: uiMode,
       sketch: { ...pixelGridValues }
-    }));
+    })).then((result) => {
+      const { fileName, success } = result;
+      const action = success ? "Successfully" : "Failed to";
+
+      toast(`${action} saved sketch to ${fileName}`);
+    });
   }
 
   const clearSketch = () => {
     setPixelGridValues(getEmptyGrid(gridSize));
+  };
+
+  const openSketch = (sketchData) => {
+    const { size, mode, sketch, success } = sketchData;
+
+    if (!success) {
+      toast(`Failed to open sketch. Make sure this is a valid file`);
+      return;
+    }
+
+    setPixelGridValues({ ...sketch });
+    setUiMode(mode);
+    setGridSize(size);
   }
 
   const generateRandomSketch = () => {
@@ -61,6 +81,10 @@ function App() {
 
     window.electronAPI.onClearSketch(() => {
       clearSketch();
+    });
+
+    window.electronAPI.onOpenSketch((sketchData) => {
+      openSketch(sketchData);
     });
 
     window.electronAPI.onRandomSketch(() => {
@@ -103,6 +127,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <ToastContainer />
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: '10px' }}>
             <PixelGrid gridValues={pixelGridValues}
@@ -114,7 +139,6 @@ function App() {
             />
           </div>
         </div>
-
         <div style={{ margin: '10px' }}>
           <ColorPicker
             onClick={setSelectedColor}

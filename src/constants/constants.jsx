@@ -51,6 +51,6 @@ module.exports = {
         RANDOM_SKETCH: 'random-sketch',
         REQUEST_SKETCH: 'request-sketch',
         SET_SKETCH: 'set-sketch',
-        SAVE_SKETCH: 'save-sketch'
+        SAVE_SKETCH: 'save-sketch',
     }
 };
