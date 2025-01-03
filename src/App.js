@@ -5,26 +5,33 @@ import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { ALL_COLORS, LED_COLORS, UI_MODES } from './constants/constants';
+import { ALL_COLORS, LED_COLORS, UI_MODES, DEFAULT_COLOR } from './constants/constants';
 
 const previousSubmission = {};
+const getEmptyGrid = (gridSize) => {
+  const cleanGrid = {};
+  for (let i = 0; i < gridSize * gridSize; i++) {
+    cleanGrid[i] = DEFAULT_COLOR;
+  }
 
+  return cleanGrid;
+}
 function App() {
   const [selectedColor, setSelectedColor] = useState("White");
-  const [pixelGridValues, setPixelGridValues] = useState({});
   const [uiMode, setUiMode] = useState(UI_MODES.STANDALONE);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [gridSize, setGridSize] = useState(16);
-
-  const clearSketch = () => {
-    setPixelGridValues({});
-  }
+  const [pixelGridValues, setPixelGridValues] = useState(getEmptyGrid(gridSize));
 
   const handleSketchRequest = () => {
     window.electronAPI.saveSketch(JSON.stringify({
       size: gridSize,
       sketch: { ...pixelGridValues }
     }));
+  }
+
+  const clearSketch = () => {
+    setPixelGridValues(getEmptyGrid(gridSize));
   }
 
   const generateRandomSketch = () => {
@@ -76,13 +83,15 @@ function App() {
 
   const updateLedArray = () => {
     let pixelArray = "";
-    for (let i = 0; i < gridSize; i++) {
+    for (let i = 0; i < gridSize * gridSize; i++) {
 
       if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null && previousSubmission[i] !== pixelGridValues[i]) {
         pixelArray += `[${i}:${pixelGridValues[i]}]`
         previousSubmission[i] = pixelGridValues[i];
       }
     }
+
+    console.log(`Sending pixelArray: ${pixelArray}`);
 
     window.electronAPI.updateLedArray(pixelArray);
   }

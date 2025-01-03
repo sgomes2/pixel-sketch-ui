@@ -3,7 +3,7 @@ var net = require('net');
 const path = require('node:path');
 const { UI_MODES } = require("./src/constants/constants.jsx")
 
-// let variableSize = false;
+var isWin = process.platform === "win32";
 
 function handlePixelSketchArray(data) {
   console.log(`Recieved new LED sketch: ${data}`);
@@ -20,10 +20,29 @@ function handlePixelSketchArray(data) {
 }
 
 const saveSketch = (sketch) => {
-  const saveLocation = dialog.showSaveDialogSync();
+  let selectedSaveLocation = dialog.showSaveDialogSync({ defaultPath: 'new_sketch', filters: { name: 'Json', extensions: ['json'] } });
 
-  console.log(`Saving ${JSON.stringify(sketch)} to ${saveLocation}`);
-  // win.webContents.send('save-sketch');
+  if (selectedSaveLocation === undefined) {
+    return;
+  }
+
+  const pathDelimiter = isWin ? "\\" : "/";
+
+  const saveLocation = selectedSaveLocation.split(pathDelimiter);
+
+  let fileName = saveLocation[-1];
+
+  if (fileName.includes(".")) {
+    fileName = fileName.substring(0, fileName.lastIndexOf("."));
+  }
+
+  fileName += '.json';
+
+  saveLocation[-1] = fileName;
+
+  const finalSaveLocation = saveLocation.join(pathDelimiter);
+
+  console.log(`Saving to ${finalSaveLocation}`);
 }
 
 const createWindow = () => {
@@ -135,8 +154,8 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('set-sketch', (event, array) => handlePixelSketchArray(array));
-  ipcMain.handle('save-sketch', (event, sketch) => saveSketch(sketch));
+  ipcMain.on('set-sketch', (_event, array) => { handlePixelSketchArray(array) });
+  ipcMain.on('save-sketch', (_event, sketch) => { saveSketch(sketch) });
   createWindow();
 });
 
