@@ -44,6 +44,14 @@ const getFilePath = () => {
 
 const saveSketch = async (_event, sketch) => {
   const saveLocation = getFilePath();
+
+  if (!saveLocation) {
+    return (
+      {
+        success: true
+      }
+    );
+  }
   let success = false;
 
   try {
@@ -62,10 +70,18 @@ const saveSketch = async (_event, sketch) => {
 }
 
 const getSavedSketch = () => {
-  let selectedSketchLocation = dialog.showOpenDialogSync({ filters: [{ name: 'Sketches', extensions: ['json'] }] })[0];
-  console.log(JSON.stringify(selectedSketchLocation));
+  const selectedSketchLocation = dialog.showOpenDialogSync({ filters: [{ name: 'Sketches', extensions: ['json'] }] });
+
+  if (!selectedSketchLocation) {
+    return (
+      {
+        cancelled: true
+      }
+    )
+  }
+
   try {
-    const sketchData = JSON.parse(fs.readFileSync(selectedSketchLocation, 'utf8'));
+    const sketchData = JSON.parse(fs.readFileSync(selectedSketchLocation[0], 'utf8'));
     return sketchData;
   } catch (err) {
     return null;
@@ -95,7 +111,12 @@ const createWindow = () => {
   const openSketch = () => {
     let sketchData = getSavedSketch();
 
-    sketchData = sketchData === null ? { success: false } : sketchData;
+    if (sketchData.cancelled) {
+      return;
+    }
+
+    sketchData = sketchData === null ? { success: false } : { ...sketchData, success: true };
+    console.log(JSON.stringify(sketchData));
 
     win.webContents.send('open-sketch', sketchData);
   }

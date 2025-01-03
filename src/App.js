@@ -31,6 +31,11 @@ function App() {
       sketch: { ...pixelGridValues }
     })).then((result) => {
       const { fileName, success } = result;
+
+      if (!fileName && success) {
+        return;
+      }
+
       const action = success ? "Successfully" : "Failed to";
 
       toast(`${action} saved sketch to ${fileName}`);
@@ -44,7 +49,7 @@ function App() {
   const openSketch = (sketchData) => {
     const { size, mode, sketch, success } = sketchData;
 
-    if (!success) {
+    if (!success || !mode || !sketch || !size) {
       toast(`Failed to open sketch. Make sure this is a valid file`);
       return;
     }
@@ -97,7 +102,7 @@ function App() {
     })
 
     const updateSize = () => {
-      setSize({ width: window.innerWidth, height: window.innerHeight });
+      setSize({ width: window.innerWidth * .8, height: window.innerHeight * .8 });
     }
 
     window.addEventListener('resize', updateSize);

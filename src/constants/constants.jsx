@@ -37,8 +37,8 @@ const TERTIARY_COLORS = [
 
 module.exports = {
     UI_MODES: Object.freeze({
-        STANDALONE: 0,
-        LED_ARRAY: 1
+        STANDALONE: 1,
+        LED_ARRAY: 2
     }),
     LED_COLORS: [PRIMARY_COLORS],
     ALL_COLORS: [PRIMARY_COLORS, SECONDARY_COLORS, TERTIARY_COLORS],
