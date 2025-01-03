@@ -5,19 +5,19 @@ import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { ALL_COLORS, LED_COLORS, UI_MODES, DEFAULT_COLOR } from './constants/constants';
+import { ALL_COLORS, LED_COLORS, UI_MODES, DEFAULT_GRID_BACKGROUND_COLOR, DEFAULT_SELECTED_COLOR } from './constants/constants';
 
 const previousSubmission = {};
 const getEmptyGrid = (gridSize) => {
   const cleanGrid = {};
   for (let i = 0; i < gridSize * gridSize; i++) {
-    cleanGrid[i] = DEFAULT_COLOR;
+    cleanGrid[i] = DEFAULT_GRID_BACKGROUND_COLOR;
   }
 
   return cleanGrid;
 }
 function App() {
-  const [selectedColor, setSelectedColor] = useState("White");
+  const [selectedColor, setSelectedColor] = useState(DEFAULT_SELECTED_COLOR);
   const [uiMode, setUiMode] = useState(UI_MODES.STANDALONE);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [gridSize, setGridSize] = useState(16);

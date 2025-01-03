@@ -7,7 +7,6 @@ const { UI_MODES } = require("./src/constants/constants.jsx");
 var isWin = process.platform === "win32";
 
 function handlePixelSketchArray(data) {
-  console.log(`Recieved new LED sketch: ${data}`);
   try {
     var client = new net.Socket();
     console.log("Writing new sketch to LED array");
@@ -44,13 +43,10 @@ const getFilePath = () => {
 }
 
 const saveSketch = (sketch) => {
-
   const saveLocation = getFilePath();
-  console.log(`Saving to ${saveLocation}`);
 
   try {
     fs.writeFileSync(saveLocation, sketch);
-    console.log('File written successfully!');
   } catch (err) {
     console.error(err);
   }
