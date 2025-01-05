@@ -48,6 +48,7 @@ module.exports = {
         SET_MODE: 'set-mode',
         OPEN_SKETCH: 'open-sketch',
         CLEAR_SKETCH: 'clear-sketch',
+        LED_ARRAY_STATUS_CHANGE: 'led-array-status-changed',
         RANDOM_SKETCH: 'random-sketch',
         REQUEST_SKETCH: 'request-sketch',
         REQUEST_IMAGE_DATA: 'request-image-data',

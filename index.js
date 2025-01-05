@@ -3,9 +3,12 @@ var net = require('net');
 const path = require('node:path');
 const fs = require('fs');
 const { UI_MODES, IPC_MESSAGES } = require("./src/constants/constants.jsx");
-const { convertSketchToImage, saveImageToFile } = require("./imageUtil");
+const { convertSketchToImage, saveImageToFile } = require("./utils/imageUtil.js");
+const { PersistentSocket } = require('./utils/persistentSocket.js');
 
 var isWin = process.platform === "win32";
+
+const arduinoSocket = new PersistentSocket('pixelsketch.local', 80);
 
 function handlePixelSketchArray(_event, data) {
   try {
@@ -133,9 +136,22 @@ const createWindow = () => {
 
   win.webContents.openDevTools()
 
-  const setUiMode = (uiMode) => {
+  const ledArrayConnected = () => {
+    win.webContents.send(IPC_MESSAGES.LED_ARRAY_STATUS_CHANGE, true);
+  }
 
+  const ledArrayDisconnected = () => {
+    win.webContents.send(IPC_MESSAGES.LED_ARRAY_STATUS_CHANGE, false);
+  }
+
+  arduinoSocket.connectedCallback = ledArrayConnected;
+  arduinoSocket.disconnectedCallback = ledArrayDisconnected;
+
+  const setUiMode = (uiMode) => {
     win.webContents.send(IPC_MESSAGES.SET_MODE, uiMode);
+    if (uiMode.mode === UI_MODES.LED_ARRAY) {
+      arduinoSocket.connect();
+    }
   }
 
   const openSketch = () => {

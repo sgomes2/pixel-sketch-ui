@@ -23,6 +23,7 @@ function App() {
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [gridSize, setGridSize] = useState(16);
   const [pixelGridValues, setPixelGridValues] = useState(getEmptyGrid(gridSize));
+  const [ledArrayConnected, setLedArrayConnected] = useState(false);
 
   const handleSketchRequest = () => {
     window.electronAPI.saveSketch(JSON.stringify({
@@ -103,6 +104,10 @@ function App() {
       clearSketch(size);
       setUiMode(mode);
       setGridSize(size);
+    });
+
+    window.electronAPI.onLedArrayStatusChange((status) => {
+      setLedArrayConnected(status);
     });
 
     window.electronAPI.onClearSketch(() => {
@@ -187,7 +192,7 @@ function App() {
         </div>
         {uiMode === UI_MODES.LED_ARRAY ?
           <Stack direction="row" spacing={2}>
-            <Button variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
+            <Button disabled={!ledArrayConnected} variant="contained" onClick={updateLedArray} startIcon={<LightModeIcon />}>
               Light Up Box
             </Button>
           </Stack>
