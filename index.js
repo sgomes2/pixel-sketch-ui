@@ -2,7 +2,8 @@ const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron')
 var net = require('net');
 const path = require('node:path');
 const fs = require('fs');
-const { UI_MODES } = require("./src/constants/constants.jsx");
+const { UI_MODES, IPC_MESSAGES } = require("./src/constants/constants.jsx");
+const { convertSketchToImage, saveImageToFile } = require("./imageUtil");
 
 var isWin = process.platform === "win32";
 
@@ -19,8 +20,8 @@ function handlePixelSketchArray(_event, data) {
   }
 }
 
-const getFilePath = () => {
-  let selectedSaveLocation = dialog.showSaveDialogSync({ defaultPath: 'new_sketch', filters: { name: 'Json', extensions: ['json'] } });
+const getFileSavePath = (extension, extensionName) => {
+  let selectedSaveLocation = dialog.showSaveDialogSync({ defaultPath: 'new_sketch', filters: { name: extensionName, extensions: [extension] } });
 
   if (selectedSaveLocation === undefined) {
     return;
@@ -35,7 +36,7 @@ const getFilePath = () => {
     fileName = fileName.substring(0, fileName.lastIndexOf("."));
   }
 
-  fileName += '.json';
+  fileName += `.${extension}`;
 
   saveLocation.push(fileName);
 
@@ -43,7 +44,7 @@ const getFilePath = () => {
 }
 
 const saveSketch = async (_event, sketch) => {
-  const saveLocation = getFilePath();
+  const saveLocation = getFileSavePath('json', 'Sketch');
 
   if (!saveLocation) {
     return (
@@ -56,6 +57,35 @@ const saveSketch = async (_event, sketch) => {
 
   try {
     fs.writeFileSync(saveLocation, sketch);
+    success = true;
+  } catch (err) {
+    console.error(err);
+  }
+
+  return (
+    {
+      fileName: saveLocation,
+      success
+    }
+  )
+}
+
+const saveSketchToImage = async (_event, sketch) => {
+  const saveLocation = getFileSavePath('png', 'Image');
+
+  if (!saveLocation) {
+    return (
+      {
+        success: true
+      }
+    );
+  }
+  let success = false;
+
+  try {
+    const sketchData = JSON.parse(sketch);
+    const image = convertSketchToImage(sketchData.sketch, sketchData.size, 1024);
+    await saveImageToFile(image, saveLocation);
     success = true;
   } catch (err) {
     console.error(err);
@@ -105,7 +135,7 @@ const createWindow = () => {
 
   const setUiMode = (uiMode) => {
 
-    win.webContents.send('set-mode', uiMode);
+    win.webContents.send(IPC_MESSAGES.SET_MODE, uiMode);
   }
 
   const openSketch = () => {
@@ -118,21 +148,25 @@ const createWindow = () => {
     sketchData = sketchData === null ? { success: false } : { ...sketchData, success: true };
     console.log(JSON.stringify(sketchData));
 
-    win.webContents.send('open-sketch', sketchData);
+    win.webContents.send(IPC_MESSAGES.OPEN_SKETCH, sketchData);
   }
 
   const clearSketch = () => {
 
-    win.webContents.send('clear-sketch');
+    win.webContents.send(IPC_MESSAGES.CLEAR_SKETCH);
   }
 
   const generateRandomSketch = () => {
 
-    win.webContents.send('random-sketch');
+    win.webContents.send(IPC_MESSAGES.RANDOM_SKETCH);
   }
 
   const requestCurrentSketch = () => {
-    win.webContents.send('request-sketch');
+    win.webContents.send(IPC_MESSAGES.REQUEST_SKETCH);
+  }
+
+  const requestImageData = () => {
+    win.webContents.send(IPC_MESSAGES.REQUEST_IMAGE_DATA);
   }
 
   const menu = Menu.buildFromTemplate([
@@ -146,6 +180,10 @@ const createWindow = () => {
         {
           label: 'Open Sketch',
           click: openSketch,
+        },
+        {
+          label: 'Export to PNG',
+          click: requestImageData
         }
       ]
     },
@@ -214,11 +252,8 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('set-sketch', handlePixelSketchArray);
-  ipcMain.handle('save-sketch', saveSketch);
+  ipcMain.handle(IPC_MESSAGES.SET_SKETCH, handlePixelSketchArray);
+  ipcMain.handle(IPC_MESSAGES.SAVE_SKETCH, saveSketch);
+  ipcMain.handle(IPC_MESSAGES.SAVE_IMAGE, saveSketchToImage);
   createWindow();
 });
-
-// const setVariableSize = (enable) => {
-//   Menu.getApplicationMenu().getMenuItemById("size").enabled = enable;
-// }

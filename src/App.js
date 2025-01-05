@@ -44,6 +44,25 @@ function App() {
     });
   }
 
+  const handleImageDataRequest = () => {
+    window.electronAPI.saveImage(JSON.stringify({
+      size: gridSize,
+      sketch: { ...pixelGridValues }
+    })).then((result) => {
+      const { fileName, success } = result;
+
+      if (!fileName && success) {
+        return;
+      }
+
+      if (success) {
+        toast.success(`Successfully saved image`);
+      } else {
+        toast.error(`Failed to saved image to ${fileName}`);
+      }
+    });
+  }
+
   const clearSketch = (requestedSize) => {
     const size = requestedSize ? requestedSize : gridSize;
     setPixelGridValues(getEmptyGrid(size));
@@ -101,7 +120,11 @@ function App() {
 
     window.electronAPI.onRequestSketch(() => {
       handleSketchRequest();
-    })
+    });
+
+    window.electronAPI.onRequestImageData(() => {
+      handleImageDataRequest();
+    });
 
     const updateSize = () => {
       setSize({ width: window.innerWidth * .8, height: window.innerHeight * .8 });

@@ -50,7 +50,9 @@ module.exports = {
         CLEAR_SKETCH: 'clear-sketch',
         RANDOM_SKETCH: 'random-sketch',
         REQUEST_SKETCH: 'request-sketch',
+        REQUEST_IMAGE_DATA: 'request-image-data',
         SET_SKETCH: 'set-sketch',
         SAVE_SKETCH: 'save-sketch',
+        SAVE_IMAGE: 'save-image'
     }
 };
