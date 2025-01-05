@@ -1,17 +1,4 @@
 import sharp from 'sharp';
-import fs from 'fs';
-
-const sketchFile = process.argv[2];
-console.log(`File Read: ${sketchFile}`);
-
-const destinationFileArr = sketchFile.split(".");
-destinationFileArr[destinationFileArr.length - 1] = 'png';
-const destinationFilePath = destinationFileArr.join(".");
-console.log(`PNG destination${destinationFilePath}`)
-
-const sketchData = JSON.parse(fs.readFileSync(sketchFile, 'utf8'));
-
-console.log(JSON.stringify(sketchData.sketch));
 
 const RgbArrayFromHex = (hexVal) => {
     const rgbArr = [];
@@ -21,20 +8,18 @@ const RgbArrayFromHex = (hexVal) => {
     return rgbArr;
 }
 
-const sketchToImage = (rawSketchData, desiredSize) => {
-    const currentSize = rawSketchData.size;
-    const repeatLength = Math.floor(desiredSize / currentSize);
+const resizeSketch = (rawSketch, sketchSize, imageSize) => {
+    const repeatLength = Math.floor(imageSize / sketchSize);
 
     const imageArr = [];
-    const pixelVals = Object.values(rawSketchData.sketch);
+    const pixelVals = Object.values(rawSketch);
 
-
-    for (let i = 0; i < currentSize; i++) {
-        const start = i * currentSize;
+    for (let i = 0; i < sketchSize; i++) {
+        const start = i * sketchSize;
 
         const row = [];
 
-        const pixelRow = i % 2 ? pixelVals.slice(start, start + currentSize) : pixelVals.slice(start, start + currentSize).reverse();
+        const pixelRow = i % 2 ? pixelVals.slice(start, start + sketchSize) : pixelVals.slice(start, start + sketchSize).reverse();
 
         pixelRow.forEach(pixel => {
             const pixelRgb = RgbArrayFromHex(pixel);
@@ -51,15 +36,27 @@ const sketchToImage = (rawSketchData, desiredSize) => {
     return imageArr;
 }
 
-// Read a raw array of pixels and save it to a png
-const input = Uint8Array.from(sketchToImage(sketchData, 512)); // or Uint8ClampedArray
-const image = sharp(input, {
-    // because the input does not contain its dimensions or how many channels it has
-    // we need to specify it in the constructor options
-    raw: {
-        width: 512,
-        height: 512,
-        channels: 3
-    }
-});
-await image.toFile(destinationFilePath);
+const convertSketchToImage = (rawSketch, sketchSize, imageSize) => {
+    const input = Uint8Array.from(resizeSketch(rawSketch, sketchSize, imageSize)); // or Uint8ClampedArray
+    const image = sharp(input, {
+        // because the input does not contain its dimensions or how many channels it has
+        // we need to specify it in the constructor options
+        raw: {
+            width: 512,
+            height: 512,
+            channels: 3
+        }
+    });
+
+    return image;
+}
+
+const saveImageToFile = (image, savePath) => {
+    image.ToFile(savePath);
+}
+
+module.exports = {
+    convertSketchToImage,
+    saveImageToFile
+}
+

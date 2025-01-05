@@ -44,8 +44,9 @@ function App() {
     });
   }
 
-  const clearSketch = () => {
-    setPixelGridValues(getEmptyGrid(gridSize));
+  const clearSketch = (requestedSize) => {
+    const size = requestedSize ? requestedSize : gridSize;
+    setPixelGridValues(getEmptyGrid(size));
   };
 
   const openSketch = (sketchData) => {
@@ -80,7 +81,7 @@ function App() {
   useLayoutEffect(() => {
     window.electronAPI.onSetMode((modeVal) => {
       const { mode, size } = modeVal;
-      clearSketch();
+      clearSketch(size);
       setUiMode(mode);
       setGridSize(size);
     });
