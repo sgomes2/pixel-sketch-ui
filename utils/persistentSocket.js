@@ -24,7 +24,9 @@ class PersistentSocket {
 
         this.socket.on('close', (hadError) => {
             this.disconnectedCallback();
-            this.reconnect();
+            if (hadError) {
+                this.reconnect();
+            }
         });
 
         this.socket.on('error', (err) => {

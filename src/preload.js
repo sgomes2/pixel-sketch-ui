@@ -19,5 +19,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
         ipcRenderer.removeAllListeners(IPC_MESSAGES.RANDOM_SKETCH);
         ipcRenderer.removeAllListeners(IPC_MESSAGES.REQUEST_SKETCH);
         ipcRenderer.removeAllListeners(IPC_MESSAGES.REQUEST_IMAGE_DATA);
+        ipcRenderer.removeAllListeners(IPC_MESSAGES.LED_ARRAY_STATUS_CHANGE);
     },
 });

@@ -9,15 +9,12 @@ const { PersistentSocket } = require('./utils/persistentSocket.js');
 var isWin = process.platform === "win32";
 
 const arduinoSocket = new PersistentSocket('pixelsketch.local', 80);
+let currentMode = UI_MODES.STANDALONE;
+let currentSize = 16;
 
 function handlePixelSketchArray(_event, data) {
   try {
-    var client = new net.Socket();
-    console.log("Writing new sketch to LED array");
-    client.connect(80, 'pixelsketch.local', function () {
-      client.write(data);
-      client.destroy();
-    });
+    arduinoSocket.write(data);
   } catch (exception) {
     console.log(`Failed to send arduino sketch: ${exception}`);
   }
@@ -134,8 +131,6 @@ const createWindow = () => {
     height: 900
   });
 
-  win.webContents.openDevTools()
-
   const ledArrayConnected = () => {
     win.webContents.send(IPC_MESSAGES.LED_ARRAY_STATUS_CHANGE, true);
   }
@@ -148,10 +143,21 @@ const createWindow = () => {
   arduinoSocket.disconnectedCallback = ledArrayDisconnected;
 
   const setUiMode = (uiMode) => {
+    if (currentMode === uiMode.mode && currentSize === uiMode.size) {
+      return;
+    }
+
     win.webContents.send(IPC_MESSAGES.SET_MODE, uiMode);
+
+    if (currentMode === UI_MODES.LED_ARRAY) {
+      arduinoSocket.destroy();
+    }
     if (uiMode.mode === UI_MODES.LED_ARRAY) {
       arduinoSocket.connect();
     }
+
+    currentMode = uiMode.mode;
+    currentSize = uiMode.size;
   }
 
   const openSketch = () => {
