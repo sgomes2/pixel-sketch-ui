@@ -5,7 +5,7 @@ const PRIMARY_COLORS = [
     "#FFA500", // Orange
     "#FFFF00", // Yellow
     "#008000", // Green
-    "#008080", // Teal
+    "#964B00", // Brown
     "#00FFFF", // Cyan
     "#0000FF", // Blue
     "#FF00FF", // Magenta

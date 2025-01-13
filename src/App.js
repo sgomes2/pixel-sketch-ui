@@ -149,7 +149,7 @@ function App() {
     for (let i = 0; i < gridSize * gridSize; i++) {
 
       if (pixelGridValues[i] !== undefined && pixelGridValues[i] !== null && previousSubmission[i] !== pixelGridValues[i]) {
-        pixelArray += `[${i}:${pixelGridValues[i]}]`
+        pixelArray += `[${i},${pixelGridValues[i].replace('#', '0x')}]`
         previousSubmission[i] = pixelGridValues[i];
       }
     }

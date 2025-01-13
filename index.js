@@ -14,6 +14,7 @@ let currentSize = 16;
 
 function handlePixelSketchArray(_event, data) {
   try {
+    // console.log(`Writing ${data} to arduino`);
     arduinoSocket.write(data);
   } catch (exception) {
     console.log(`Failed to send arduino sketch: ${exception}`);
