@@ -163,15 +163,32 @@ const createWindow = () => {
 
   const openSketch = () => {
     let sketchData = getSavedSketch();
+    const { size, mode, sketch } = sketchData;
 
     if (sketchData.cancelled) {
       return;
     }
 
-    sketchData = sketchData === null ? { success: false } : { ...sketchData, success: true };
-    console.log(JSON.stringify(sketchData));
+    if (!(size && mode && sketch)) {
+      win.webContents.send(IPC_MESSAGES.OPEN_SKETCH, { success: false });
+      return;
+    }
 
-    win.webContents.send(IPC_MESSAGES.OPEN_SKETCH, sketchData);
+    win.webContents.send(IPC_MESSAGES.OPEN_SKETCH, { ...sketchData, success: true });
+
+    if (currentMode === mode && currentSize === size) {
+      return;
+    }
+
+    if (currentMode === UI_MODES.LED_ARRAY) {
+      arduinoSocket.destroy();
+    }
+    if (mode === UI_MODES.LED_ARRAY) {
+      arduinoSocket.connect();
+    }
+
+    currentMode = mode;
+    currentSize = size;
   }
 
   const clearSketch = () => {
@@ -184,6 +201,10 @@ const createWindow = () => {
     win.webContents.send(IPC_MESSAGES.RANDOM_SKETCH);
   }
 
+  const fillSketch = () => {
+    win.webContents.send(IPC_MESSAGES.FILL_SKETCH);
+  }
+
   const requestCurrentSketch = () => {
     win.webContents.send(IPC_MESSAGES.REQUEST_SKETCH);
   }
@@ -191,6 +212,8 @@ const createWindow = () => {
   const requestImageData = () => {
     win.webContents.send(IPC_MESSAGES.REQUEST_IMAGE_DATA);
   }
+
+  // win.webContents.openDevTools()
 
   const menu = Menu.buildFromTemplate([
     {
@@ -265,6 +288,10 @@ const createWindow = () => {
         {
           label: 'Random Sketch',
           click: generateRandomSketch
+        },
+        {
+          label: "Fill Sketch",
+          click: fillSketch
         }
       ]
     }

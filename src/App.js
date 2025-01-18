@@ -9,10 +9,11 @@ import { ALL_COLORS, LED_COLORS, UI_MODES, DEFAULT_GRID_BACKGROUND_COLOR, DEFAUL
 import { ToastContainer, toast } from 'react-toastify';
 
 const previousSubmission = {};
-const getEmptyGrid = (gridSize) => {
+const getEmptyGrid = (gridSize, color) => {
   const cleanGrid = {};
+  const backgroundColor = color ? color : DEFAULT_GRID_BACKGROUND_COLOR;
   for (let i = 0; i < gridSize * gridSize; i++) {
-    cleanGrid[i] = DEFAULT_GRID_BACKGROUND_COLOR;
+    cleanGrid[i] = backgroundColor;
   }
 
   return cleanGrid;
@@ -43,6 +44,10 @@ function App() {
         toast.error(`Failed to saved sketch to ${fileName}`);
       }
     });
+  }
+
+  const fillSketch = () => {
+    setPixelGridValues(getEmptyGrid(gridSize, selectedColor));
   }
 
   const handleImageDataRequest = () => {
@@ -114,6 +119,10 @@ function App() {
       clearSketch();
     });
 
+    window.electronAPI.onFillSketch(() => {
+      fillSketch(selectedColor);
+    })
+
     window.electronAPI.onOpenSketch((sketchData) => {
       openSketch(sketchData);
     });
@@ -142,7 +151,7 @@ function App() {
       window.removeEventListener('resize', updateSize)
       window.electronAPI.removeAllListeners();
     };
-  }, [gridSize, pixelGridValues]);
+  }, [gridSize, pixelGridValues, selectedColor]);
 
   const updateLedArray = () => {
     let pixelArray = "";

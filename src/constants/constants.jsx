@@ -54,6 +54,7 @@ module.exports = {
         REQUEST_IMAGE_DATA: 'request-image-data',
         SET_SKETCH: 'set-sketch',
         SAVE_SKETCH: 'save-sketch',
-        SAVE_IMAGE: 'save-image'
+        SAVE_IMAGE: 'save-image',
+        FILL_SKETCH: 'fill-sketch'
     }
 };
