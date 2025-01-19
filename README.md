@@ -14,7 +14,7 @@ This project is a simple 16x16 pixel art application. There is an accompanying [
 ## Downloads
 | OS    | Savings |
 | -------- | ------- |
-| Windows  | [Download](https://drive.google.com/uc?export=download&id=1blD1vaf1qLzzIvsSj0-I_yueutG_eSSz)   |
+| Windows  | [Download](https://drive.google.com/uc?export=download&id=1tQJYacZ9_7N2CSC_O29ZYqOoFK-wFCpa)   |
 | Mac | TBD     |
 
 ## Running Locally
