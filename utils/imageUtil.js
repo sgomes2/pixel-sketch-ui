@@ -1,17 +1,21 @@
-const sharp = require('sharp');
+const PNG = require('pngjs');
+const fs = require('fs');
 
 const RgbArrayFromHex = (hexVal) => {
     const rgbArr = [];
     rgbArr.push(parseInt(hexVal.slice(1, 3), 16));
     rgbArr.push(parseInt(hexVal.slice(3, 5), 16));
     rgbArr.push(parseInt(hexVal.slice(5, 7), 16));
+    rgbArr.push(255);
     return rgbArr;
 }
 
-const resizeSketch = (rawSketch, sketchSize, imageSize) => {
+const convertSketchToImage = (rawSketch, sketchSize, imageSize) => {
+
+    const image = new PNG.PNG({ width: imageSize, height: imageSize });
+    const imageArr = [];
     const repeatLength = Math.floor(imageSize / sketchSize);
 
-    const imageArr = [];
     const pixelVals = Object.values(rawSketch);
 
     for (let i = 0; i < sketchSize; i++) {
@@ -33,26 +37,15 @@ const resizeSketch = (rawSketch, sketchSize, imageSize) => {
         }
     }
 
-    return imageArr;
-}
 
-const convertSketchToImage = (rawSketch, sketchSize, imageSize) => {
-    const input = Uint8Array.from(resizeSketch(rawSketch, sketchSize, imageSize)); // or Uint8ClampedArray
-    const image = sharp(input, {
-        // because the input does not contain its dimensions or how many channels it has
-        // we need to specify it in the constructor options
-        raw: {
-            width: imageSize,
-            height: imageSize,
-            channels: 3
-        }
-    });
+
+    image.data = Buffer.from(imageArr);
 
     return image;
 }
 
 const saveImageToFile = async (image, savePath) => {
-    await image.toFile(savePath);
+    await image.pack().pipe(fs.createWriteStream(savePath));
 }
 
 module.exports = {

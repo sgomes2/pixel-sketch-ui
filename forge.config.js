@@ -3,10 +3,13 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
   packagerConfig: {
+    name: "Pixel Sketch",
     asar: true,
     icon: "./assets/round-pencil",
   },
-  rebuildConfig: {},
+  rebuildConfig: {
+    force: true
+  },
   makers: [
     {
       name: '@electron-forge/maker-squirrel',

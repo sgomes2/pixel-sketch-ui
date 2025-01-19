@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { convertSketchToImage, saveImageToFile } from "./utils/imageUtil.js";
+import { convertSketchToImage, saveImageToFile } from "./utils/pngjsImageUtil.js";
 
 const sketchFile = process.argv[2];
 console.log(`File Read: ${sketchFile}`);
