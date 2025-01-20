@@ -106,7 +106,10 @@ function App() {
   useLayoutEffect(() => {
     window.electronAPI.onSetMode((modeVal) => {
       const { mode, size } = modeVal;
-      clearSketch(size);
+      if (size !== gridSize) {
+        clearSketch(size);
+      }
+
       setUiMode(mode);
       setGridSize(size);
     });

@@ -1,5 +1,5 @@
-const PNG = require('pngjs');
-const fs = require('fs');
+// const PNG = require('pngjs');
+const { Jimp } = require("jimp");
 
 const RgbArrayFromHex = (hexVal) => {
     const rgbArr = [];
@@ -11,8 +11,6 @@ const RgbArrayFromHex = (hexVal) => {
 }
 
 const convertSketchToImage = (rawSketch, sketchSize, imageSize) => {
-
-    const image = new PNG.PNG({ width: imageSize, height: imageSize });
     const imageArr = [];
     const repeatLength = Math.floor(imageSize / sketchSize);
 
@@ -37,18 +35,50 @@ const convertSketchToImage = (rawSketch, sketchSize, imageSize) => {
         }
     }
 
-
-
-    image.data = Buffer.from(imageArr);
-
-    return image;
+    return Jimp.fromBitmap({
+        data: Buffer.from(imageArr),
+        width: imageSize,
+        height: imageSize
+    });
 }
 
 const saveImageToFile = async (image, savePath) => {
-    await image.pack().pipe(fs.createWriteStream(savePath));
+    await image.write(savePath);
+}
+
+const getHexStringFromPixelColor = (colorVal) => {
+    return `#${colorVal.toString(16).slice(0, -2)}`;
+}
+
+const jimpImageToHexArray = (image, size) => {
+    const hexArray = {};
+    let index = 0;
+    for (let i = 0; i < size; i++) {
+        if (i % 2) {
+            for (let j = 0; j < size; j++) {
+                hexArray[index] = getHexStringFromPixelColor(image.getPixelColor(i, j));
+                index++;
+            }
+        } else {
+            for (let j = size - 1; j >= 0; j--) {
+                hexArray[index] = getHexStringFromPixelColor(image.getPixelColor(i, j));
+                index++;
+            }
+        }
+    }
+    return hexArray;
+}
+
+const convertImageToSketch = async (path, size) => {
+    const image = await Jimp.read(path);
+
+    image.resize({ w: size, h: size });
+
+    return jimpImageToHexArray(image, size);
 }
 
 module.exports = {
     convertSketchToImage,
+    convertImageToSketch,
     saveImageToFile
 }

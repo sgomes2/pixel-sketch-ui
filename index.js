@@ -3,7 +3,7 @@ var net = require('net');
 const path = require('node:path');
 const fs = require('fs');
 const { UI_MODES, IPC_MESSAGES } = require("./src/constants/constants.jsx");
-const { convertSketchToImage, saveImageToFile } = require("./utils/imageUtil.js");
+const { convertImageToSketch, convertSketchToImage, saveImageToFile } = require("./utils/imageUtil.js");
 const { PersistentSocket } = require('./utils/persistentSocket.js');
 
 var isWin = process.platform === "win32";
@@ -161,8 +161,9 @@ const createWindow = () => {
     currentSize = uiMode.size;
   }
 
-  const openSketch = () => {
-    let sketchData = getSavedSketch();
+  const openSketch = (newSketchData) => {
+
+    let sketchData = newSketchData ? newSketchData : getSavedSketch();
     const { size, mode, sketch } = sketchData;
 
     if (sketchData.cancelled) {
@@ -192,17 +193,73 @@ const createWindow = () => {
   }
 
   const clearSketch = () => {
-
-    win.webContents.send(IPC_MESSAGES.CLEAR_SKETCH);
+    dialog.showMessageBox(win, {
+      title: "Clear Sketch",
+      message: "Are you sure you want to clear the current sketch?",
+      buttons: ["Cancel", "Yes"],
+      type: "question",
+    }).then((action) => {
+      if (action.response !== 0) {
+        win.webContents.send(IPC_MESSAGES.CLEAR_SKETCH);
+      }
+    });
   }
 
   const generateRandomSketch = () => {
-
-    win.webContents.send(IPC_MESSAGES.RANDOM_SKETCH);
+    dialog.showMessageBox(win, {
+      title: "Open SKetch",
+      message: "Are you sure you want to generate a random sketch? This will erase the current sketch.",
+      buttons: ["Cancel", "Yes"],
+      type: "question",
+    }).then((action) => {
+      if (action.response !== 0) {
+        win.webContents.send(IPC_MESSAGES.RANDOM_SKETCH);
+      }
+    });
   }
 
-  const fillSketch = () => {
-    win.webContents.send(IPC_MESSAGES.FILL_SKETCH);
+  const fillSketch = async () => {
+    dialog.showMessageBox(win, {
+      title: "Fill SKetch",
+      message: "Are you sure you want to fill the sketch with the selected color? This will erase the current sketch.",
+      buttons: ["Cancel", "Yes"],
+      type: "question",
+    }).then((action) => {
+      if (action.response !== 0) {
+        win.webContents.send(IPC_MESSAGES.FILL_SKETCH);
+      }
+    })
+  }
+
+  const handleImageImport = () => {
+    const imageLocation = dialog.showOpenDialogSync({ filters: [{ name: 'Images', extensions: ['png', 'jpeg', 'jpg'] }] });
+
+    if (!imageLocation) {
+      return (
+        {
+          cancelled: true
+        }
+      )
+    }
+
+    const sketchSizes = ["16x16", "32x32", "64x64", "128x128"]
+    dialog.showMessageBox(win, {
+      title: "Import Image",
+      message: "Are you sure you want to import an image? This will erase the current sketch.",
+      detail: "Images will mostly likley need to be resized in order to fit the sketch. Quality may be degraded.",
+      buttons: ["Cancel", ...sketchSizes],
+      type: "question",
+    }).then((action) => {
+      if (action.response !== 0) {
+        const size = 2 ** (action.response + 3);
+        const sketch = convertImageToSketch(imageLocation, size)
+        openSketch({
+          size,
+          mode: UI_MODES.STANDALONE,
+          sketch
+        })
+      }
+    })
   }
 
   const requestCurrentSketch = () => {
@@ -225,11 +282,27 @@ const createWindow = () => {
         },
         {
           label: 'Open Sketch',
-          click: openSketch,
+          click: () => {
+            dialog.showMessageBox(win, {
+              title: "Open SKetch",
+              message: "Are you sure you want to open a new sketch? This will erase the current sketch.",
+              buttons: ["Cancel", "Yes"],
+              type: "question",
+            }).then((action) => {
+              if (action.response !== 0) {
+                openSketch();
+              }
+
+            });
+          },
         },
         {
           label: 'Export to PNG',
           click: requestImageData
+        },
+        {
+          label: 'Import Picture',
+          click: handleImageImport
         }
       ]
     },
