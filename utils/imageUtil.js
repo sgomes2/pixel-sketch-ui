@@ -73,10 +73,11 @@ const convertImageToSketch = async (path, size) => {
     try {
         const image = await Jimp.read(path);
 
-        image.resize({ w: size, h: size }).rotate(90);
+        image.resize({ w: size, h: size }).rotate(90).opacity(1);
         const imageArray = await jimpImageToHexArray(image, size);
         return imageArray;
     } catch (err) {
+        console.log(err);
         return {
             failure: true,
             message: err,

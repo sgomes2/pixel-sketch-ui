@@ -9,7 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     onRandomSketch: (callback) => ipcRenderer.on(IPC_MESSAGES.RANDOM_SKETCH, () => { callback() }),
     onRequestSketch: (callback) => ipcRenderer.on(IPC_MESSAGES.REQUEST_SKETCH, () => { callback() }),
     onRequestImageData: (callback) => ipcRenderer.on(IPC_MESSAGES.REQUEST_IMAGE_DATA, () => { callback() }),
-    onShowToast: (callback) => ipcRenderer.on(IPC_MESSAGES.SHOW_TOAST, () => { callback() }),
+    onShowToast: (callback) => ipcRenderer.on(IPC_MESSAGES.SHOW_TOAST, (_event, params) => { callback(params) }),
     onLedArrayStatusChange: (callback) => ipcRenderer.on(IPC_MESSAGES.LED_ARRAY_STATUS_CHANGE, (_event, connected) => { callback(connected) }),
     updateLedArray: (array) => ipcRenderer.invoke(IPC_MESSAGES.SET_SKETCH, array),
     saveSketch: (sketch) => ipcRenderer.invoke(IPC_MESSAGES.SAVE_SKETCH, sketch),
