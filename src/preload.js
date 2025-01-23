@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     onRandomSketch: (callback) => ipcRenderer.on(IPC_MESSAGES.RANDOM_SKETCH, () => { callback() }),
     onRequestSketch: (callback) => ipcRenderer.on(IPC_MESSAGES.REQUEST_SKETCH, () => { callback() }),
     onRequestImageData: (callback) => ipcRenderer.on(IPC_MESSAGES.REQUEST_IMAGE_DATA, () => { callback() }),
+    onShowToast: (callback) => ipcRenderer.on(IPC_MESSAGES.SHOW_TOAST, () => { callback() }),
     onLedArrayStatusChange: (callback) => ipcRenderer.on(IPC_MESSAGES.LED_ARRAY_STATUS_CHANGE, (_event, connected) => { callback(connected) }),
     updateLedArray: (array) => ipcRenderer.invoke(IPC_MESSAGES.SET_SKETCH, array),
     saveSketch: (sketch) => ipcRenderer.invoke(IPC_MESSAGES.SAVE_SKETCH, sketch),
@@ -22,5 +23,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
         ipcRenderer.removeAllListeners(IPC_MESSAGES.REQUEST_IMAGE_DATA);
         ipcRenderer.removeAllListeners(IPC_MESSAGES.LED_ARRAY_STATUS_CHANGE);
         ipcRenderer.removeAllListeners(IPC_MESSAGES.FILL_SKETCH);
+        ipcRenderer.removeAllListeners(IPC_MESSAGES.SHOW_TOAST);
     },
 });

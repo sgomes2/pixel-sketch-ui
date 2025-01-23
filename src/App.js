@@ -5,7 +5,7 @@ import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { ALL_COLORS, LED_COLORS, UI_MODES, DEFAULT_GRID_BACKGROUND_COLOR, DEFAULT_SELECTED_COLOR } from './constants/constants';
+import { ALL_COLORS, LED_COLORS, UI_MODES, DEFAULT_GRID_BACKGROUND_COLOR, DEFAULT_SELECTED_COLOR, TOAST_TYPES } from './constants/constants';
 import { ToastContainer, toast } from 'react-toastify';
 
 const previousSubmission = {};
@@ -44,6 +44,23 @@ function App() {
         toast.error(`Failed to saved sketch to ${fileName}`);
       }
     });
+  }
+
+  const showToast = (params) => {
+    const { type, message } = params;
+    switch (type) {
+      case TOAST_TYPES.ERROR:
+        toast.error(message);
+        break;
+      case TOAST_TYPES.INFO:
+        toast.info(message);
+        break;
+      case TOAST_TYPES.SUCCESS:
+        toast.success(message);
+        break;
+      default:
+        toast.info(message);
+    }
   }
 
   const fillSketch = () => {
@@ -116,6 +133,10 @@ function App() {
 
     window.electronAPI.onLedArrayStatusChange((status) => {
       setLedArrayConnected(status);
+    });
+
+    window.electronAPI.onShowToast((params) => {
+      showToast(params);
     });
 
     window.electronAPI.onClearSketch(() => {

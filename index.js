@@ -1,8 +1,8 @@
-const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, dialog, ipcRenderer } = require('electron')
 var net = require('net');
 const path = require('node:path');
 const fs = require('fs');
-const { UI_MODES, IPC_MESSAGES } = require("./src/constants/constants.jsx");
+const { UI_MODES, IPC_MESSAGES, TOAST_TYPES } = require("./src/constants/constants.jsx");
 const { convertImageToSketch, convertSketchToImage, saveImageToFile } = require("./utils/imageUtil.js");
 const { PersistentSocket } = require('./utils/persistentSocket.js');
 
@@ -243,16 +243,23 @@ const createWindow = () => {
     }
 
     const sketchSizes = ["16x16", "32x32", "64x64", "128x128"]
+    win.webContents.send(IPC_MESSAGES.SHOW_TOAST, { type: TOAST_TYPES.INFO, message: `Loading ${imageLocation[0]}` });
     dialog.showMessageBox(win, {
       title: "Import Image",
       message: "Are you sure you want to import an image? This will erase the current sketch.",
-      detail: "Images will mostly likley need to be resized in order to fit the sketch. Quality may be degraded.",
+      detail: "Images will mostly likely need to be resized in order to fit the sketch. Quality may be degraded.",
       buttons: ["Cancel", ...sketchSizes],
       type: "question",
-    }).then((action) => {
+    }).then(async (action) => {
       if (action.response !== 0) {
         const size = 2 ** (action.response + 3);
-        const sketch = convertImageToSketch(imageLocation, size)
+        const sketch = await convertImageToSketch(imageLocation[0], size);
+
+        if (sketch.failure) {
+          win.webContents.send(IPC_MESSAGES.SHOW_TOAST, { success: false, message: "Failed to import picture" });
+          return;
+        }
+
         openSketch({
           size,
           mode: UI_MODES.STANDALONE,

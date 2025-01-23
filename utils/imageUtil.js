@@ -70,11 +70,18 @@ const jimpImageToHexArray = (image, size) => {
 }
 
 const convertImageToSketch = async (path, size) => {
-    const image = await Jimp.read(path);
+    try {
+        const image = await Jimp.read(path);
 
-    image.resize({ w: size, h: size });
-
-    return jimpImageToHexArray(image, size);
+        image.resize({ w: size, h: size }).rotate(90);
+        const imageArray = await jimpImageToHexArray(image, size);
+        return imageArray;
+    } catch (err) {
+        return {
+            failure: true,
+            message: err,
+        }
+    }
 }
 
 module.exports = {

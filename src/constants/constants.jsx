@@ -55,6 +55,12 @@ module.exports = {
         SET_SKETCH: 'set-sketch',
         SAVE_SKETCH: 'save-sketch',
         SAVE_IMAGE: 'save-image',
-        FILL_SKETCH: 'fill-sketch'
+        FILL_SKETCH: 'fill-sketch',
+        SHOW_TOAST: 'show-toast'
+    },
+    TOAST_TYPES: {
+        INFO: 'info',
+        SUCCESS: 'success',
+        ERROR: 'error'
     }
 };
