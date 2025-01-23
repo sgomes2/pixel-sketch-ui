@@ -1,4 +1,4 @@
-// const PNG = require('pngjs');
+const { intToRGBA } = require("@jimp/utils");
 const { Jimp } = require("jimp");
 
 const RgbArrayFromHex = (hexVal) => {
@@ -47,7 +47,8 @@ const saveImageToFile = async (image, savePath) => {
 }
 
 const getHexStringFromPixelColor = (colorVal) => {
-    return `#${colorVal.toString(16).slice(0, -2)}`;
+    const rgbaArray = intToRGBA(colorVal);
+    return `#${rgbaArray.r.toString(16).padStart(2, '0')}${rgbaArray.g.toString(16).padStart(2, '0')}${rgbaArray.b.toString(16).padStart(2, '0')}`;
 }
 
 const jimpImageToHexArray = (image, size) => {
@@ -73,7 +74,7 @@ const convertImageToSketch = async (path, size) => {
     try {
         const image = await Jimp.read(path);
 
-        image.resize({ w: size, h: size }).rotate(90).opacity(1);
+        image.resize({ w: size, h: size }).rotate(90).flip({ vertical: true });
         const imageArray = await jimpImageToHexArray(image, size);
         return imageArray;
     } catch (err) {
