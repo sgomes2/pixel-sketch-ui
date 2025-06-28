@@ -29,12 +29,32 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
+      config: {
+        options: {
+          maintainer: 'Saulo Gomes <saulogomes3@gmail.com>',
+          homepage: 'https://github.com/sgomes2/pixel-sketch-ui',
+          icon: './assets/round-pencil.icns',
+          categories: ['Graphics'],
+          description: 'Pixel Sketch - A lightweight sketching tool for quick drawings.',
+          productName: 'Pixel Sketch',
+          license: 'MIT'
+        }
+      },
     },
     {
       name: '@electron-forge/maker-rpm',
-      config: {},
-    },
+      config: {
+        options: {
+          maintainer: 'Saulo Gomes <saulogomes3@gmail.com>',
+          homepage: 'https://github.com/sgomes2/pixel-sketch-ui',
+          icon: './assets/round-pencil.icns',
+          categories: ['Graphics'],
+          description: 'Pixel Sketch - A lightweight sketching tool for quick drawings.',
+          productName: 'Pixel Sketch',
+          license: 'MIT'
+        }
+      },
+    }
   ],
   plugins: [
     {

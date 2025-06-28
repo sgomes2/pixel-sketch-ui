@@ -1,9 +1,10 @@
 {
   "name": "pixel-sketch",
   "version": "1.0.0",
-  "author": "Saulo Gomes",
   "description": "A 16x16 pixel array for simple drawings.",
-  "homepage": "./",
+  "author": "Saulo Gomes <saulogomes3@gmai.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/sgomes2/pixel-sketch-ui",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -61,7 +62,7 @@
   "devDependencies": {
     "@electron-forge/cli": "^7.6.0",
     "@electron-forge/maker-deb": "^7.6.0",
-    "@electron-forge/maker-rpm": "^7.6.0",
+    "@electron-forge/maker-rpm": "^7.8.1",
     "@electron-forge/maker-squirrel": "^7.6.0",
     "@electron-forge/maker-zip": "^7.6.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
