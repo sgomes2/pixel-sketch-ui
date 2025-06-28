@@ -3,7 +3,7 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
   packagerConfig: {
-    name: "Pixel Sketch",
+    name: "pixel-sketch",
     asar: true,
     icon: "./assets/round-pencil",
   },
@@ -40,6 +40,7 @@ module.exports = {
           categories: ['Graphics'],
           description: 'Pixel Sketch - A lightweight sketching tool for quick drawings.',
           productName: 'Pixel Sketch',
+          executableName: 'pixel-sketch',
           license: 'MIT'
         }
       },
@@ -54,6 +55,7 @@ module.exports = {
           categories: ['Graphics'],
           description: 'Pixel Sketch - A lightweight sketching tool for quick drawings.',
           productName: 'Pixel Sketch',
+          executableName: 'pixel-sketch',
           license: 'MIT'
         }
       },
