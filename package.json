@@ -4,7 +4,7 @@
   "author": "Saulo Gomes <saulogomes3@gmai.com>",
   "description": "A 16x16 pixel array for simple drawings.",
   "license": "MIT",
-  "homepage": "https://github.com/sgomes2/pixel-sketch-ui",
+  "homepage": "./",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",

@@ -5,6 +5,10 @@ import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import PlayArrow from '@mui/icons-material/PlayArrow'
 import { ALL_COLORS, LED_COLORS, UI_MODES, DEFAULT_GRID_BACKGROUND_COLOR, DEFAULT_SELECTED_COLOR, TOAST_TYPES } from './constants/constants';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -25,6 +29,7 @@ function App() {
   const [gridSize, setGridSize] = useState(16);
   const [pixelGridValues, setPixelGridValues] = useState(getEmptyGrid(gridSize));
   const [ledArrayConnected, setLedArrayConnected] = useState(false);
+  const [animationMode, setAnimationMode] = useState(false);
 
   const handleSketchRequest = () => {
     window.electronAPI.saveSketch(JSON.stringify({
@@ -216,6 +221,24 @@ function App() {
             />
           </div>
         </div>
+        { false ? 
+          <Stack direction="row" spacing={2}>
+          <Button disabled={!ledArrayConnected} variant="contained" onClick={updateLedArray} startIcon={<NavigateBeforeIcon />}>
+            Previous
+          </Button>             
+          <Button disabled={!ledArrayConnected} variant="contained" onClick={updateLedArray} startIcon={<PlayArrow />}>
+            Play
+          </Button>
+          <Button disabled={!ledArrayConnected} variant="contained" onClick={updateLedArray} endIcon startIcon={<NavigateNextIcon />}>
+            Next
+          </Button>
+        </Stack> :
+          <Stack direction="row" spacing={2}>
+            <Button variant="contained" onClick={setAnimationMode(true)} startIcon={<AutoAwesomeMotionIcon />}>
+            Create Animation
+            </Button>
+          </Stack> 
+        }
         <div style={{ margin: '10px' }}>
           <ColorPicker
             onClick={setSelectedColor}
