@@ -9,28 +9,38 @@ class PixelGrid extends React.PureComponent {
         this.getPixel = this.getPixel.bind(this);
         this.getPixelRow = this.getPixelRow.bind(this);
         this.updatePixelVal = this.updatePixelVal.bind(this);
-        this.ref = React.createRef();
+        this.getPixelFromMouseEvent = this.getPixelFromMouseEvent.bind(this);
+    }
+
+    getPixelFromMouseEvent(e, pixelSize, gridSize) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const padding = 7;
+        const cellSize = pixelSize + 2; // +2 accounts for 1px border on each side (content-box)
+        const col = Math.floor((e.clientX - rect.left - padding) / cellSize);
+        const row = Math.floor((e.clientY - rect.top - padding) / cellSize);
+
+        if (col < 0 || col >= gridSize || row < 0 || row >= gridSize) return null;
+
+        if (row % 2 === 0) {
+            return (gridSize * row) + (gridSize - 1 - col);
+        } else {
+            return (gridSize * row) + col;
+        }
     }
 
     updatePixelVal(pixelNum) {
         const { selectedColor, updateGridValues, gridValues } = this.props;
 
-        // console.log(`Setting Pixel ${pixelNum}:${selectedColor}`);
-
         updateGridValues({ ...gridValues, [pixelNum]: selectedColor });
     }
 
     getPixel(pixelNum, pixelSize) {
-        const { mouseDown } = this.state
         const { gridValues } = this.props
-
         const color = gridValues[pixelNum];
 
         return (
             <div
                 key={`pixel-${pixelNum}`}
-                onClick={() => { this.updatePixelVal(pixelNum) }}
-                onMouseOver={() => { if (mouseDown) { this.updatePixelVal(pixelNum) } }}
                 style={{
                     backgroundColor: color !== undefined ? `${color}` : 'Black',
                     minHeight: `${pixelSize}px`, maxHeight: `${pixelSize}px`,
@@ -73,8 +83,18 @@ class PixelGrid extends React.PureComponent {
         return (
             <div>
                 <div
-                    onMouseDown={() => { this.setState({ ...this.state, mouseDown: true }) }}
-                    onMouseUp={() => { this.setState({ ...this.state, mouseDown: false }) }}
+                    onMouseDown={(e) => {
+                        this.setState({ mouseDown: true });
+                        const pixelNum = this.getPixelFromMouseEvent(e, pixelSize, gridSize);
+                        if (pixelNum !== null) this.updatePixelVal(pixelNum);
+                    }}
+                    onMouseUp={() => { this.setState({ mouseDown: false }) }}
+                    onMouseMove={(e) => {
+                        if (!this.state.mouseDown) return;
+                        const pixelNum = this.getPixelFromMouseEvent(e, pixelSize, gridSize);
+                        if (pixelNum !== null) this.updatePixelVal(pixelNum);
+                    }}
+                    onMouseLeave={() => { this.setState({ mouseDown: false }) }}
                     className='pixelGrid'>
                     {pixelRows}
                 </div>
