@@ -19,7 +19,7 @@
     "path": "^0.12.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^0.0.0",
     "react-toastify": "^11.0.2",
     "serialport": "^12.0.0",
     "socketio": "^1.0.0",
@@ -69,7 +69,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
     "@electron-forge/plugin-fuses": "^7.6.0",
     "@electron/fuses": "^1.8.0",
-    "electron": "^33.2.1",
+    "electron": "^41.2.0",
     "electron-is-dev": "^3.0.1",
     "electron-packager": "^17.1.2"
   },
