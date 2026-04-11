@@ -27,9 +27,9 @@ class PixelGrid extends React.PureComponent {
     }
 
     updatePixelVal(pixelNum) {
-        const { selectedColor, updateGridValues, gridValues } = this.props;
+        const { selectedColor, updateGridValues } = this.props;
 
-        updateGridValues({ ...gridValues, [pixelNum]: selectedColor });
+        updateGridValues({ type: 'SET_PIXEL', pixelNum, color: selectedColor });
     }
 
     getPixel(pixelNum) {
