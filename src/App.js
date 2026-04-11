@@ -1,6 +1,6 @@
 import PixelGrid from './components/PixelGrid/PixelGrid';
 import './App.css';
-import { useState, useLayoutEffect } from 'react';
+import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
