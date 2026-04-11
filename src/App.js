@@ -1,6 +1,6 @@
 import PixelGrid from './components/PixelGrid/PixelGrid';
 import './App.css';
-import { useState, useLayoutEffect, useRef, useEffect } from 'react';
+import { useState, useReducer, useLayoutEffect, useRef, useEffect } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -18,12 +18,23 @@ const getEmptyGrid = (gridSize, color) => {
 
   return cleanGrid;
 }
+const gridReducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_PIXEL':
+      return { ...state, [action.pixelNum]: action.color };
+    case 'SET_GRID':
+      return action.grid;
+    default:
+      return state;
+  }
+}
+
 function App() {
   const [selectedColor, setSelectedColor] = useState(DEFAULT_SELECTED_COLOR);
   const [uiMode, setUiMode] = useState(UI_MODES.STANDALONE);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [gridSize, setGridSize] = useState(16);
-  const [pixelGridValues, setPixelGridValues] = useState(getEmptyGrid(gridSize));
+  const [pixelGridValues, dispatch] = useReducer(gridReducer, getEmptyGrid(gridSize));
   const [ledArrayConnected, setLedArrayConnected] = useState(false);
 
   const handleSketchRequest = () => {
@@ -64,7 +75,7 @@ function App() {
   }
 
   const fillSketch = () => {
-    setPixelGridValues(getEmptyGrid(gridSize, selectedColor));
+    dispatch({ type: 'SET_GRID', grid: getEmptyGrid(gridSize, selectedColor) });
   }
 
   const handleImageDataRequest = () => {
@@ -88,7 +99,7 @@ function App() {
 
   const clearSketch = (requestedSize) => {
     const size = requestedSize ? requestedSize : gridSize;
-    setPixelGridValues(getEmptyGrid(size));
+    dispatch({ type: 'SET_GRID', grid: getEmptyGrid(size) });
   };
 
   const openSketch = (sketchData) => {
@@ -99,7 +110,7 @@ function App() {
       return;
     }
 
-    setPixelGridValues({ ...sketch });
+    dispatch({ type: 'SET_GRID', grid: { ...sketch } });
     setUiMode(mode);
     setGridSize(size);
   }
@@ -117,7 +128,7 @@ function App() {
       randomSketch[i] = randomColor;
     }
 
-    setPixelGridValues(randomSketch);
+    dispatch({ type: 'SET_GRID', grid: randomSketch });
   }
 
   const gridValuesRef = useRef(pixelGridValues);
@@ -231,7 +242,7 @@ function App() {
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: '10px' }}>
             <PixelGrid gridValues={pixelGridValues}
-              updateGridValues={setPixelGridValues}
+              updateGridValues={dispatch}
               selectedColor={selectedColor}
               uiMode={uiMode}
               screenSize={pixelGridScreenSize}
