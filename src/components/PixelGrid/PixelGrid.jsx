@@ -2,7 +2,7 @@ import React from 'react';
 import './PixelGrid.css'
 import { LED_COLORS, ALL_COLORS, UI_MODES } from '../../constants/constants'
 
-class PixelGrid extends React.Component {
+class PixelGrid extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {};
