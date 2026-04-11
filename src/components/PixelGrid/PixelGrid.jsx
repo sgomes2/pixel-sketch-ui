@@ -34,18 +34,14 @@ class PixelGrid extends React.PureComponent {
         updateGridValues({ ...gridValues, [pixelNum]: selectedColor });
     }
 
-    getPixel(pixelNum, pixelSize) {
+    getPixel(pixelNum) {
         const { gridValues } = this.props
         const color = gridValues[pixelNum];
 
         return (
             <div
                 key={`pixel-${pixelNum}`}
-                style={{
-                    backgroundColor: color !== undefined ? `${color}` : 'Black',
-                    minHeight: `${pixelSize}px`, maxHeight: `${pixelSize}px`,
-                    minWidth: `${pixelSize}px`, maxWidth: `${pixelSize}px`,
-                }}
+                style={{ backgroundColor: color !== undefined ? color : 'Black' }}
                 className='pixel'
             />
         )
@@ -56,9 +52,9 @@ class PixelGrid extends React.PureComponent {
 
         for (let i = 1; i <= numPixels; i++) {
             if (rowNum % 2 === 0) {
-                pixels.push(this.getPixel((numPixels * rowNum) + (numPixels - i), pixelSize));
+                pixels.push(this.getPixel((numPixels * rowNum) + (numPixels - i)));
             } else {
-                pixels.push(this.getPixel((numPixels * rowNum) + (i - 1), pixelSize));
+                pixels.push(this.getPixel((numPixels * rowNum) + (i - 1)));
             }
         }
 
@@ -82,6 +78,7 @@ class PixelGrid extends React.PureComponent {
         }
         return (
             <div>
+                <style>{`.pixel { min-width: ${pixelSize}px; max-width: ${pixelSize}px; min-height: ${pixelSize}px; max-height: ${pixelSize}px; }`}</style>
                 <div
                     onMouseDown={(e) => {
                         this.setState({ mouseDown: true });
