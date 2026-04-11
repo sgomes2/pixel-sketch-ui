@@ -1,6 +1,6 @@
 import PixelGrid from './components/PixelGrid/PixelGrid';
 import './App.css';
-import { useState, useLayoutEffect } from 'react';
+import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import ColorPicker from './components/ColorPicker/ColorPicker';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -120,6 +120,9 @@ function App() {
     setPixelGridValues(randomSketch);
   }
 
+  const gridValuesRef = useRef(pixelGridValues);
+  useEffect(() => { gridValuesRef.current = pixelGridValues; }, [pixelGridValues]);
+
   useLayoutEffect(() => {
     window.electronAPI.onSetMode((modeVal) => {
       const { mode, size } = modeVal;
@@ -175,7 +178,7 @@ function App() {
       window.removeEventListener('resize', updateSize)
       window.electronAPI.removeAllListeners();
     };
-  }, [gridSize, pixelGridValues, selectedColor]);
+  }, [gridSize, selectedColor]);
 
   const updateLedArray = () => {
     let pixelArray = "";
