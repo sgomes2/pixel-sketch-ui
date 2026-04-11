@@ -168,7 +168,7 @@ function App() {
     });
 
     const updateSize = () => {
-      setSize({ width: window.innerWidth * .8, height: window.innerHeight * .8 });
+      setSize({ width: window.innerWidth * .95, height: window.innerHeight * .95 });
     }
 
     window.addEventListener('resize', updateSize);
@@ -193,6 +193,26 @@ function App() {
     window.electronAPI.updateLedArray(pixelArray);
   }
 
+  // Compute pixelSize so that grid + color picker + margins + button all fit within size.height
+  const gridPadding = 12;
+  const pickerPadding = 20;   // 10px each side of colorPicker
+  const cellMargin = 4;       // 2px each side per color cell
+  const wrapperMargins = 40;  // 10px margin on each side of two wrapper divs
+  const buttonHeight = uiMode === UI_MODES.LED_ARRAY ? 56 : 0;
+  const colorRows = uiMode === UI_MODES.LED_ARRAY ? 1 : 3;
+
+  // Height: (gridSize + colorRows) * ps + gridPadding + colorRows*cellMargin + pickerPadding + wrapperMargins + buttonHeight <= size.height
+  const heightPs = Math.floor(
+    (size.height - gridPadding - colorRows * cellMargin - pickerPadding - wrapperMargins - buttonHeight) /
+    (gridSize + colorRows)
+  );
+  const widthPs = Math.floor((size.width - gridPadding) / gridSize);
+  const pixelSize = Math.min(heightPs, widthPs);
+
+  // Construct screenSize that produces this exact pixelSize inside PixelGrid's formula
+  const pixelGridScreenSize = { width: size.width, height: pixelSize * gridSize + gridPadding };
+  const gridWidth = gridSize * pixelSize + gridPadding;
+
   return (
     <div className="App">
       <header className="App-header">
@@ -214,7 +234,7 @@ function App() {
               updateGridValues={setPixelGridValues}
               selectedColor={selectedColor}
               uiMode={uiMode}
-              screenSize={size}
+              screenSize={pixelGridScreenSize}
               gridSize={gridSize}
             />
           </div>
@@ -224,6 +244,7 @@ function App() {
             onClick={setSelectedColor}
             uiMode={uiMode}
             screenSize={size}
+            gridWidth={gridWidth}
           />
         </div>
         {uiMode === UI_MODES.LED_ARRAY ?

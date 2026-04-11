@@ -49,7 +49,8 @@ class PixelGrid extends React.PureComponent {
         const { screenSize, gridSize } = this.props
         const { width, height } = screenSize;
 
-        const pixelSize = Math.floor((Math.min(height, width) * .75) / gridSize);
+        const gridPadding = 12; // 6px padding on each side of .pixelGrid
+        const pixelSize = Math.floor((Math.min(height, width) - gridPadding) / gridSize);
 
         const pixels = [];
         for (let row = 0; row < gridSize; row++) {
