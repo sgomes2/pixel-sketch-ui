@@ -7,7 +7,6 @@ class PixelGrid extends React.PureComponent {
         super(props)
         this.state = {};
         this.getPixel = this.getPixel.bind(this);
-        this.getPixelRow = this.getPixelRow.bind(this);
         this.updatePixelVal = this.updatePixelVal.bind(this);
         this.getPixelFromMouseEvent = this.getPixelFromMouseEvent.bind(this);
     }
@@ -15,9 +14,8 @@ class PixelGrid extends React.PureComponent {
     getPixelFromMouseEvent(e, pixelSize, gridSize) {
         const rect = e.currentTarget.getBoundingClientRect();
         const padding = 7;
-        const cellSize = pixelSize + 2; // +2 accounts for 1px border on each side (content-box)
-        const col = Math.floor((e.clientX - rect.left - padding) / cellSize);
-        const row = Math.floor((e.clientY - rect.top - padding) / cellSize);
+        const col = Math.floor((e.clientX - rect.left - padding) / pixelSize);
+        const row = Math.floor((e.clientY - rect.top - padding) / pixelSize);
 
         if (col < 0 || col >= gridSize || row < 0 || row >= gridSize) return null;
 
@@ -47,38 +45,26 @@ class PixelGrid extends React.PureComponent {
         )
     }
 
-    getPixelRow(rowNum, pixelSize, numPixels) {
-        const pixels = [];
-
-        for (let i = 1; i <= numPixels; i++) {
-            if (rowNum % 2 === 0) {
-                pixels.push(this.getPixel((numPixels * rowNum) + (numPixels - i)));
-            } else {
-                pixels.push(this.getPixel((numPixels * rowNum) + (i - 1)));
-            }
-        }
-
-        return (
-            <div key={`Pixel_Row_${rowNum}`} className='pixelRow'>
-                {pixels}
-            </div>
-        )
-    }
-
     render() {
         const { screenSize, gridSize } = this.props
         const { width, height } = screenSize;
 
-        const pixelRows = [];
+        const gridPadding = 12; // 6px padding on each side of .pixelGrid
+        const pixelSize = Math.floor((Math.min(height, width) - gridPadding) / gridSize);
 
-        const pixelSize = Math.floor((Math.min(height, width) * .75) / gridSize);
-
-        for (let i = 0; i < gridSize; i++) {
-            pixelRows.push(this.getPixelRow(i, pixelSize, gridSize));
+        const pixels = [];
+        for (let row = 0; row < gridSize; row++) {
+            for (let i = 1; i <= gridSize; i++) {
+                if (row % 2 === 0) {
+                    pixels.push(this.getPixel((gridSize * row) + (gridSize - i)));
+                } else {
+                    pixels.push(this.getPixel((gridSize * row) + (i - 1)));
+                }
+            }
         }
+
         return (
             <div>
-                <style>{`.pixel { min-width: ${pixelSize}px; max-width: ${pixelSize}px; min-height: ${pixelSize}px; max-height: ${pixelSize}px; }`}</style>
                 <div
                     onMouseDown={(e) => {
                         this.setState({ mouseDown: true });
@@ -92,8 +78,9 @@ class PixelGrid extends React.PureComponent {
                         if (pixelNum !== null) this.updatePixelVal(pixelNum);
                     }}
                     onMouseLeave={() => { this.setState({ mouseDown: false }) }}
+                    style={{ '--pixel-size': `${pixelSize}px`, '--grid-size': gridSize }}
                     className='pixelGrid'>
-                    {pixelRows}
+                    {pixels}
                 </div>
                 {/* <button onClick={this.printArray}> Light It Up! </button> */}
             </div>

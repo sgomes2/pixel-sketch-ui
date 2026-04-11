@@ -3,10 +3,7 @@ import { LED_COLORS, ALL_COLORS, UI_MODES } from "../../constants/constants";
 import './ColorPicker.css'
 
 function ColorPicker(props) {
-    const { onClick, uiMode, screenSize } = props;
-    const { width, height } = screenSize;
-
-    const sketchGridWidth = Math.floor((Math.min(height, width)) * .75);
+    const { onClick, uiMode, gridWidth } = props;
 
     const [selectedColor, setSelectedColor] = useState("#FFFFFF");
 
@@ -17,32 +14,32 @@ function ColorPicker(props) {
 
     const colorMode = uiMode === UI_MODES.STANDALONE ? ALL_COLORS : LED_COLORS;
 
-    const pixelSize = Math.floor(((sketchGridWidth - 20)) / 14);
+    const cellsPerRow = 16;
+    const cellMargin = 4; // 2px each side
+    const pickerPadding = 20; // 10px each side
+    const cellSize = Math.floor((gridWidth - pickerPadding - cellsPerRow * cellMargin) / cellsPerRow);
 
-    const availableColors = colorMode.map((colorPallet) => {
-        return (
-            <div>
-                {colorPallet.map((color, index) => {
-                    const currentlySelected = color === selectedColor
-                    return (
-                        <div
-                            onClick={() => { selectColor(color) }}
-                            key={color}
-                            style={{
-                                backgroundColor: `${color}`,
-                                minHeight: `${pixelSize}px`, maxHeight: `${pixelSize}px`,
-                                minWidth: `${pixelSize}px`, maxWidth: `${pixelSize}px`,
-                            }}
-                            className={`cell ${currentlySelected ? 'selected' : ''}`}
-                        />
-                    )
-                })}
-            </div>
-        )
-    })
+    const allColors = colorMode.flat();
+    const colorRows = [];
+    for (let i = 0; i < allColors.length; i += cellsPerRow) {
+        colorRows.push(allColors.slice(i, i + cellsPerRow));
+    }
+
+    const availableColors = colorRows.map((row, rowIndex) => (
+        <div key={rowIndex} className="colorRow">
+            {row.map((color) => (
+                <div
+                    onClick={() => { selectColor(color) }}
+                    key={color}
+                    style={{ backgroundColor: color }}
+                    className={`cell ${color === selectedColor ? 'selected' : ''}`}
+                />
+            ))}
+        </div>
+    ))
 
     return (
-        <div className="colorPicker">
+        <div className="colorPicker" style={{ '--cell-size': `${cellSize}px`, width: `${gridWidth}px` }}>
             {availableColors}
         </div>
     )

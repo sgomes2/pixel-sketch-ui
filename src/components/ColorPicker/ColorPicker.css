@@ -1,9 +1,15 @@
+.colorRow {
+    display: flex;
+    justify-content: center;
+}
+
 .cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    box-sizing: border-box;
     border-radius: 2px;
-    float: left;
     margin: 2px;
     border: 3px solid transparent;
-    display: block;
 }
 
 .colorPicker {
