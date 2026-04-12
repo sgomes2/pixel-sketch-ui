@@ -182,11 +182,18 @@ function App() {
       setSize({ width: window.innerWidth * .95, height: window.innerHeight * .95 });
     }
 
-    window.addEventListener('resize', updateSize);
+    let resizeTimer;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updateSize, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
     updateSize();
 
     return () => {
-      window.removeEventListener('resize', updateSize)
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
       window.electronAPI.removeAllListeners();
     };
   }, [gridSize, selectedColor]);
